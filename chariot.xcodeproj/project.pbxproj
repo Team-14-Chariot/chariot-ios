@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C70F7E2828E8F76900B77214 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70F7E2728E8F76900B77214 /* MapViewController.swift */; };
+		C70F7E2A28E911D700B77214 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70F7E2928E911D700B77214 /* EventViewController.swift */; };
 		C756E4AB28D91A5E005B0525 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C756E4AA28D91A5E005B0525 /* AppDelegate.swift */; };
 		C756E4AD28D91A5E005B0525 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C756E4AC28D91A5E005B0525 /* SceneDelegate.swift */; };
 		C756E4AF28D91A5E005B0525 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C756E4AE28D91A5E005B0525 /* ViewController.swift */; };
@@ -36,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C70F7E2728E8F76900B77214 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		C70F7E2928E911D700B77214 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		C756E4A728D91A5E005B0525 /* chariot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = chariot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C756E4AA28D91A5E005B0525 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C756E4AC28D91A5E005B0525 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -103,9 +107,11 @@
 				C756E4AC28D91A5E005B0525 /* SceneDelegate.swift */,
 				C756E4AE28D91A5E005B0525 /* ViewController.swift */,
 				C756E4B028D91A5E005B0525 /* Main.storyboard */,
+				C70F7E2928E911D700B77214 /* EventViewController.swift */,
 				C756E4B328D91A60005B0525 /* Assets.xcassets */,
 				C756E4B528D91A60005B0525 /* LaunchScreen.storyboard */,
 				C756E4B828D91A60005B0525 /* Info.plist */,
+				C70F7E2728E8F76900B77214 /* MapViewController.swift */,
 			);
 			path = chariot;
 			sourceTree = "<group>";
@@ -258,9 +264,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C70F7E2A28E911D700B77214 /* EventViewController.swift in Sources */,
 				C756E4AF28D91A5E005B0525 /* ViewController.swift in Sources */,
 				C756E4AB28D91A5E005B0525 /* AppDelegate.swift in Sources */,
 				C756E4AD28D91A5E005B0525 /* SceneDelegate.swift in Sources */,
+				C70F7E2828E8F76900B77214 /* MapViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,6 +445,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JXXWX9PX9T;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = chariot/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -444,6 +453,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -464,6 +474,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = JXXWX9PX9T;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = chariot/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -471,6 +482,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
