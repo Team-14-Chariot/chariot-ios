@@ -21,9 +21,13 @@
 			</array>
 		</dict>
 	</dict>
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>This application requires location services to work</string>
-<key>NSLocationAlwaysUsageDescription</key>
-<string>This application requires location services to work</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This application requires location services to work</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This application requires location services to work</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This application requires location services to work</string>
+	<key>UIUserInterfaceStyle</key>
+	<string>Light</string>
 </dict>
 </plist>

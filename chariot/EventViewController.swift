@@ -33,7 +33,7 @@ class EventViewController: UIViewController {
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
 
-        if identifier == "toMainDisplay" {
+        if identifier == "startToMain" {
             // here is where I would query the backend for valid event
             // want to be able to pass event name to next screen ?
 
