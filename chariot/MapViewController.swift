@@ -14,6 +14,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     @IBOutlet weak var mapView: MKMapView!
     
+    @IBOutlet weak var nextTurnLabel: UILabel!
+    @IBOutlet weak var nextTurnDistance: UILabel!
     @IBOutlet weak var testButton: UIButton!
     
     private var locationManager: CLLocationManager!
@@ -23,13 +25,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     private var route: MKRoute?
     
     
-//    private var activeRide: Bool
+    private var activeRide: Bool = false
+    private var curDestination: MKMapItem?
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         mapView.delegate = self
+//        nextTurnLabel.text = "NO CURRENT RIDE"
 
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -50,6 +54,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         defer { currentLocation = locations.last
             let viewRegion = MKCoordinateRegion(center: locations.last!.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
             mapView.setRegion(viewRegion, animated: true)
+            
+            // probably have to add this part to dropoff button
+            // updates too slow to keep up with highway driving
+//            mapView.removeOverlays(self.mapView.overlays)
+            
+            if activeRide {
+                self.generatePolyLine(toDestination: self.curDestination!)
+            }
         }
 
         if currentLocation == nil {
@@ -100,6 +112,16 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             self.route = response.routes.first
             guard let polyLine = self.route?.polyline else { return }
             self.mapView.addOverlay(polyLine, level: .aboveRoads)
+
+            print("show steps? :")
+            print(self.route!.steps[1].instructions)
+            print(String(self.route!.steps[1].distance))
+            
+//            print(step?.instructions)
+            self.nextTurnLabel.text = self.route!.steps[1].instructions
+            // shows distance in meters probably need to make a better way for that to be shown
+            // in a more useful
+            self.nextTurnDistance.text = String(self.route!.steps[1].distance)
             
         }
     }
@@ -109,17 +131,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBAction func onTest(_ sender: Any) {
         //figure out how to navigate to a destination
         let geocoder = CLGeocoder()
-        
+        self.activeRide = true
         geocoder.geocodeAddressString("851 David Ross Rd, West Lafayette, IN 47906") {
             placemarks, error in
             let dest = placemarks?.first
-            
-            self.generatePolyLine(toDestination:  MKMapItem(placemark: MKPlacemark(placemark: dest!)))
-            
-            
+            self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: (placemarks?.first)!))
+            self.generatePolyLine(toDestination:  self.curDestination!)
         }
-                
-        
     }
     
     func showRoute(_ response: MKDirections.Response) {
