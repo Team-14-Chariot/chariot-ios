@@ -15,7 +15,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBOutlet weak var mapView: MKMapView!
     
     @IBOutlet weak var nextTurnLabel: UILabel!
-    @IBOutlet weak var nextTurnDistance: UILabel!
     @IBOutlet weak var testButton: UIButton!
     
     @IBOutlet weak var endSessionButton: UIBarButtonItem!
@@ -39,12 +38,23 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        
+        
+        nextTurnLabel.layer.cornerRadius = 8
+        nextTurnLabel.clipsToBounds = true
 
+        // To provide the shadow
+        nextTurnLabel.layer.shadowRadius = 10
+        nextTurnLabel.layer.shadowOpacity = 1.0
+        nextTurnLabel.layer.shadowOffset = CGSize(width: 3, height: 3)
+        nextTurnLabel.layer.shadowColor = UIColor.black.cgColor
+        
         // Check for Location Services
 
         if CLLocationManager.locationServicesEnabled() {
             locationManager.requestAlwaysAuthorization()
             locationManager.startUpdatingLocation()
+//            locationManager.startUpdatingHeading()
         }
         
     }
@@ -73,6 +83,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             }
         }
     }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+           mapView.camera.heading = newHeading.magneticHeading
+           mapView.setCamera(mapView.camera, animated: true)
+       }
     
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -118,13 +133,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             print(self.route!.steps[1].instructions)
             print(String(self.route!.steps[1].distance))
             
-//            print(step?.instructions)
-            self.nextTurnLabel.text = self.route!.steps[1].instructions
-            // shows distance in meters probably need to make a better way for that to be shown
-            // in a more useful
-            self.nextTurnDistance.text = String(self.route!.steps[1].distance)
+            self.nextTurnLabel.text = self.directionLabelString(instructions: self.route!.steps[1].instructions, meters: self.route!.steps[1].distance)
             
         }
+    }
+    
+    func directionLabelString (instructions: String, meters: Double) -> String {
+        let miles = meters / 1609
+        return String(format: "%@ in %.2f miles", instructions, miles)//("\(instructions)\t \(miles, specifier: "%.2f")")
     }
     
     
@@ -152,6 +168,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         let alert = UIAlertController(title: "End Session", message: "Confirm you want to end your session?", preferredStyle: .alert)
 
                 // add an action (button)
+            // need to change handler to a function that also turns off accepting rides in backend
         alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler:{ _ in
             self.performSegue(withIdentifier: "returnToEntry", sender: nil)}))
         
