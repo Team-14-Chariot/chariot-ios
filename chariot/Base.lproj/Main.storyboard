@@ -48,6 +48,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
+                    <navigationItem key="navigationItem" id="SzO-iC-KI7"/>
                     <connections>
                         <outlet property="event_code" destination="zDD-1f-cEV" id="Rg7-uP-ie0"/>
                         <outlet property="submit" destination="L3m-GB-HJt" id="15o-Nr-dfK"/>
@@ -108,7 +109,11 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Chariot" id="juN-AN-yJw">
-                        <barButtonItem key="leftBarButtonItem" title="Stop Session" image="stop.fill" catalog="system" id="8Vw-DO-mwf"/>
+                        <barButtonItem key="leftBarButtonItem" title="Stop Session" image="stop.fill" catalog="system" id="8Vw-DO-mwf">
+                            <connections>
+                                <action selector="endSession:" destination="vVs-1r-TxJ" id="szB-1U-0mn"/>
+                            </connections>
+                        </barButtonItem>
                         <rightBarButtonItems>
                             <barButtonItem title="settings" image="gearshape.fill" catalog="system" id="e59-Dn-ZUc"/>
                             <barButtonItem title="Pause" image="pause.fill" catalog="system" id="Xl5-Bq-gkH"/>
@@ -118,21 +123,24 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="endSessionButton" destination="8Vw-DO-mwf" id="GuQ-LB-KT6"/>
                         <outlet property="mapView" destination="ESh-SX-5a8" id="Alv-Gw-YHL"/>
                         <outlet property="nextTurnDistance" destination="sji-H9-Pcg" id="1Aj-Gs-s24"/>
                         <outlet property="nextTurnLabel" destination="V69-JI-w8T" id="WpV-ef-vlF"/>
                         <outlet property="testButton" destination="9b4-cO-dQR" id="NIe-W3-5GK"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="returnToEntry" id="8zN-RF-YMn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CsT-Nj-QyD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="916.92307692307691" y="416.58767772511845"/>
+            <point key="canvasLocation" x="875" y="417"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="SVj-IP-iL6">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" modalPresentationStyle="fullScreen" id="4V9-9E-Bze" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="qem-RK-uwP"/>
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="o7r-Xt-wLX">
                         <rect key="frame" x="0.0" y="47" width="390" height="44"/>

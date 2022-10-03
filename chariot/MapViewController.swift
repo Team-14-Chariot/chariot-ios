@@ -18,6 +18,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBOutlet weak var nextTurnDistance: UILabel!
     @IBOutlet weak var testButton: UIButton!
     
+    @IBOutlet weak var endSessionButton: UIBarButtonItem!
     private var locationManager: CLLocationManager!
     private var currentLocation: CLLocation?
     private var destination: CLPlacemark?
@@ -145,6 +146,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         let route = response.routes.first
         mapView.addOverlay(route!.polyline, level: MKOverlayLevel.aboveRoads)
 
+    }
+    
+    @IBAction func endSession(_ sender: Any) {
+        let alert = UIAlertController(title: "End Session", message: "Confirm you want to end your session?", preferredStyle: .alert)
+
+                // add an action (button)
+        alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler:{ _ in
+            self.performSegue(withIdentifier: "returnToEntry", sender: nil)}))
+        
+               // show the alert
+               self.present(alert, animated: true, completion: nil)
     }
     
     /*
