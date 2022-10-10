@@ -35,7 +35,9 @@
                                 <rect key="frame" x="123" y="348" width="144" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="gray" title="Start Driving"/>
+                                <buttonConfiguration key="configuration" style="gray" title="Start Driving">
+                                    <color key="baseBackgroundColor" systemColor="opaqueSeparatorColor"/>
+                                </buttonConfiguration>
                                 <connections>
                                     <segue destination="4V9-9E-Bze" kind="show" identifier="startToMain" id="H8d-FV-xtY"/>
                                 </connections>
@@ -46,7 +48,7 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" red="0.0" green="0.50196078431372548" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="SzO-iC-KI7"/>
                     <connections>
@@ -97,7 +99,6 @@
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="1iw-Y6-z5g"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Chariot" id="juN-AN-yJw">
@@ -155,8 +156,8 @@
         <image name="logo" width="512" height="512"/>
         <image name="pause.fill" catalog="system" width="117" height="128"/>
         <image name="stop.fill" catalog="system" width="128" height="113"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        <systemColor name="opaqueSeparatorColor">
+            <color red="0.77647058823529413" green="0.77647058823529413" blue="0.78431372549019607" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tertiarySystemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
