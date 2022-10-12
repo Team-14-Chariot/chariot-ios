@@ -18,6 +18,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBOutlet weak var testButton: UIButton!
     
     @IBOutlet weak var endSessionButton: UIBarButtonItem!
+    @IBOutlet weak var pauseSessionButton: UIBarButtonItem!
+    
     private var locationManager: CLLocationManager!
     private var currentLocation: CLLocation?
     private var destination: CLPlacemark?
@@ -33,7 +35,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         super.viewDidLoad()
 
         mapView.delegate = self
-//        nextTurnLabel.text = "NO CURRENT RIDE"
 
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -42,13 +43,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         nextTurnLabel.layer.cornerRadius = 8
         nextTurnLabel.clipsToBounds = true
+        nextTurnLabel.isHidden = true
         testButton.layer.cornerRadius = testButton.frame.width / 2
         testButton.clipsToBounds = true
 
         // To provide the shadow
         nextTurnLabel.layer.shadowRadius = 10
         nextTurnLabel.layer.shadowOpacity = 1.0
-        nextTurnLabel.layer.shadowOffset = CGSize(width: 3, height: 3)
+        nextTurnLabel.layer.shadowOffset = CGSize(width: 5, height: 5)
         nextTurnLabel.layer.shadowColor = UIColor.black.cgColor
         
         // Check for Location Services
@@ -58,7 +60,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             locationManager.startUpdatingLocation()
 //            locationManager.startUpdatingHeading()
         }
-        
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        print("accepting Rides")
+//        turn on accepting rides here
     }
 
     // MARK - CLLocationManagerDelegate
@@ -150,33 +155,63 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBAction func onTest(_ sender: Any) {
         //figure out how to navigate to a destination
         let geocoder = CLGeocoder()
-        self.activeRide = true
-        geocoder.geocodeAddressString("851 David Ross Rd, West Lafayette, IN 47906") {
-            placemarks, error in
-            let dest = placemarks?.first
-            self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: (placemarks?.first)!))
-            self.generatePolyLine(toDestination:  self.curDestination!)
+        if self.activeRide {
+            self.activeRide = false;
+            testButton.setTitle("Accept Ride", for: .normal)
+            while !mapView.overlays.isEmpty {
+                mapView.removeOverlays(self.mapView.overlays)
+                print("removed an overlay")
+            }
+            nextTurnLabel.isHidden = true
+
+        } else {
+            self.activeRide = true
+            testButton.setTitle("Dropoff", for: .normal)
+            geocoder.geocodeAddressString("851 David Ross Rd, West Lafayette, IN 47906") {
+                placemarks, error in
+//                let dest = placemarks?.first
+                self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: (placemarks?.first)!))
+                self.generatePolyLine(toDestination:  self.curDestination!)
+            }
+            nextTurnLabel.isHidden = false
         }
+        
     }
     
     func showRoute(_ response: MKDirections.Response) {
-        
         let route = response.routes.first
         mapView.addOverlay(route!.polyline, level: MKOverlayLevel.aboveRoads)
-
     }
     
     @IBAction func endSession(_ sender: Any) {
         let alert = UIAlertController(title: "End Session", message: "Confirm you want to end your session?", preferredStyle: .alert)
-
                 // add an action (button)
             // need to change handler to a function that also turns off accepting rides in backend
-        alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler:{ _ in
-            self.performSegue(withIdentifier: "returnToEntry", sender: nil)}))
-        
+        alert.addAction(UIAlertAction(title: "Confirm", style: UIAlertAction.Style.default, handler:{ _ in self.endSession()}))
                // show the alert
                self.present(alert, animated: true, completion: nil)
     }
+    
+    func endSession() {
+        self.activeRide = false
+        nextTurnLabel.isHidden = true
+        self.mapView.removeOverlays(self.mapView.overlays)
+        testButton.setTitle("Accept Ride", for: .normal)
+//        drop off current rider if they exist
+//        set status to inactive in back end
+        self.performSegue(withIdentifier: "returnToEntry", sender: nil)
+    }
+    @IBAction func pauseRidePressed(_ sender: Any) {
+//        dropoff current rider
+        self.activeRide = false
+        nextTurnLabel.isHidden = true
+        testButton.setTitle("Accept Ride", for: .normal)
+        self.mapView.removeOverlays(self.mapView.overlays)
+//        set status to offline in backend
+        self.performSegue(withIdentifier: "pauseRides", sender: nil)
+    }
+    
+    
     
     /*
     // MARK: - Navigation
