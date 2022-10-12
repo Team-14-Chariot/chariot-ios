@@ -42,6 +42,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         nextTurnLabel.layer.cornerRadius = 8
         nextTurnLabel.clipsToBounds = true
+        testButton.layer.cornerRadius = testButton.frame.width / 2
+        testButton.clipsToBounds = true
 
         // To provide the shadow
         nextTurnLabel.layer.shadowRadius = 10
