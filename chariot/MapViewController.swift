@@ -117,7 +117,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return MKCircleRenderer()
     }
     
-    func generatePolyLine(toDestination destination: MKMapItem) {
+    func generatePolyLine(toDestination destination: MKMapItem) -> TimeInterval {
         
         let request = MKDirections.Request()
         //start from the user's current location to find the ride
@@ -141,8 +141,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             print(String(self.route!.steps[1].distance))
             
             self.nextTurnLabel.text = self.directionLabelString(instructions: self.route!.steps[1].instructions, meters: self.route!.steps[1].distance)
-            
         }
+        if self.route != nil {
+            return self.route!.expectedTravelTime
+        }
+        return -1
     }
     
     func directionLabelString (instructions: String, meters: Double) -> String {
@@ -167,11 +170,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         } else {
             self.activeRide = true
             testButton.setTitle("Dropoff", for: .normal)
+            // need to put address given here instead of default address
             geocoder.geocodeAddressString("851 David Ross Rd, West Lafayette, IN 47906") {
                 placemarks, error in
 //                let dest = placemarks?.first
                 self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: (placemarks?.first)!))
-                self.generatePolyLine(toDestination:  self.curDestination!)
+                let eta = self.generatePolyLine(toDestination:  self.curDestination!)
+                print(eta)
             }
             nextTurnLabel.isHidden = false
         }
