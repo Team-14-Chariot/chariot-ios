@@ -23,12 +23,20 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     private var locationManager: CLLocationManager!
     private var currentLocation: CLLocation?
-    private var destination: CLPlacemark?
+    private var riderLocation: CLPlacemark?
+    private var riderDestination: CLPlacemark?
+    
+    enum status {
+      case EMPTY, TO_PICKUP, TO_DEST
+    }
+    var currentStatus = status.EMPTY
     
     private var route: MKRoute?
     
     
     private var activeRide: Bool = false
+    var ride_id: String = ""
+    var rider_name: String = ""
     private var curDestination: MKMapItem?
     
     
@@ -70,7 +78,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     override func viewDidAppear(_ animated: Bool) {
         print("accepting Rides")
 //        turn on accepting rides here
-        // post request for pausing an event
+        // post request for setting status to active
         var resp = 0
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let myDriverID : String = appDelegate.driverID
@@ -98,6 +106,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 print(resp)
             }
         }.resume()
+        
+        // get Ride
+        
     }
 
     // MARK - CLLocationManagerDelegate
@@ -106,13 +117,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         defer { currentLocation = locations.last
             let viewRegion = MKCoordinateRegion(center: locations.last!.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
             mapView.setRegion(viewRegion, animated: true)
-            
+//            print("would be this often")
             // probably have to add this part to dropoff button
             // updates too slow to keep up with highway driving
 //            mapView.removeOverlays(self.mapView.overlays)
             
             if activeRide {
-                self.generatePolyLine(toDestination: self.curDestination!)
+                sendStatus(eta: self.generatePolyLine(toDestination: self.curDestination!))
             }
         }
 
@@ -191,30 +202,38 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     @IBAction func onTest(_ sender: Any) {
         //figure out how to navigate to a destination
-        let geocoder = CLGeocoder()
-        if self.activeRide {
-            self.activeRide = false;
-            testButton.setTitle("Accept Ride", for: .normal)
+//        if rider in car -> destination
+        if self.currentStatus == status.TO_DEST {
+            // end current ride if one exists
+            self.endRide()
+//            self.activeRide = false;
+            
+//            testButton.setTitle("Accept Ride", for: .normal)
             while !mapView.overlays.isEmpty {
                 mapView.removeOverlays(self.mapView.overlays)
                 print("removed an overlay")
             }
             nextTurnLabel.isHidden = true
             riderInfoButton.isHidden = true
-
-        } else {
-            self.activeRide = true
+            testButton.isHidden = true
+//            make a new get ride request
+            self.currentStatus = status.EMPTY
+            
+            self.getRide()
+            
+        } // this is on the way to rider, would press button now once you get to the rider
+        else if self.currentStatus == status.TO_PICKUP {
             testButton.setTitle("Dropoff", for: .normal)
             // need to put address given here instead of default address
-            geocoder.geocodeAddressString("851 David Ross Rd, West Lafayette, IN 47906") {
-                placemarks, error in
-//                let dest = placemarks?.first
-                self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: (placemarks?.first)!))
-                let eta = self.generatePolyLine(toDestination:  self.curDestination!)
-                print(eta)
-            }
+            
+            self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderDestination!))
+            _ = self.generatePolyLine(toDestination:  self.curDestination!)
+            
             nextTurnLabel.isHidden = false
             riderInfoButton.isHidden = false
+            testButton.isHidden = false
+            
+            self.currentStatus = status.TO_DEST
 
         }
         
@@ -235,6 +254,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     func endSession() {
+        // end current ride if one exists will be done in backed
+//        self.endRide()
+        
         self.activeRide = false
         nextTurnLabel.isHidden = true
         self.mapView.removeOverlays(self.mapView.overlays)
@@ -274,12 +296,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     @IBAction func pauseRidePressed(_ sender: Any) {
-//        dropoff current rider
+//        dropoff current rider will be done in backend
         self.activeRide = false
         nextTurnLabel.isHidden = true
         testButton.setTitle("Accept Ride", for: .normal)
         self.mapView.removeOverlays(self.mapView.overlays)
-//        set status to offline in backend
         
         // post request for pausing an event
         var resp = 0
@@ -302,7 +323,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
-            if error == nil, let data = data, let response = response as? HTTPURLResponse {
+            if error == nil, let _ = data, let response = response as? HTTPURLResponse {
                 print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
                 print("statusCode: \(response.statusCode)")
                 resp = response.statusCode
@@ -313,8 +334,155 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.performSegue(withIdentifier: "pauseRides", sender: nil)
     }
     
+    func getRide() {
+        // post request to getRide
+        //send driver_id, current lat, and long
+        // set self.ride_id
+        let curCoords = self.currentLocation?.coordinate
+        
+        var resp = 0
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let myDriverID : String = appDelegate.driverID
+        let parameters: [String: Any] = [
+            "driver_id": myDriverID,
+            //TODO: check that this works
+            "lat": curCoords?.latitude,
+            "long": curCoords?.longitude
+        ]
+        let url = URL(string: "https://chariot.augustabt.com/api/getRide")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
+                return
+            }
+        let jsonString = String(data: httpBody, encoding: .utf8)
+        print(jsonString!)
+        request.httpBody = httpBody
+        request.timeoutInterval = 20
+                
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if error == nil, let data = data, let response = response as? HTTPURLResponse {
+                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                print("statusCode: \(response.statusCode)")
+                resp = response.statusCode
+                print(resp)
+                print(String(data: data, encoding: .utf8))
+
+                // TODO: read data and put into accurate spots
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
+                    print(json)
+                    // set riderLocation
+                    // set Destination
+                    // set rider name
+                    self.ride_id = json["ride_id"] as? String ?? "no_id"
+                    self.rider_name = json["rider_name"] as? String ?? "no_name"
+                    
+                    self.riderLocation = self.doubleToCLPlacemark(lat: (json["source_lat"] as? Double ?? 0.0), long: (json["source_long"] as? Double ?? 0.0))
+                    self.riderDestination = self.doubleToCLPlacemark(lat: (json["dest_lat"] as? Double ?? 0.0), long: (json["dest_long"] as? Double ?? 0.0))
+                    
+                    self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderDestination!))
+                    _ = self.generatePolyLine(toDestination:  self.curDestination!)
+                    
+                    // set stuff to active
+                    self.currentStatus = status.TO_PICKUP
+                    self.nextTurnLabel.isHidden = false
+                    self.riderInfoButton.isHidden = false
+                    self.testButton.setTitle("Pickup Rider[s]", for: .normal)
+                    self.testButton.isHidden = false
+                    
+                } catch let error as NSError {
+                    print(error)
+                }
+            }
+            self.activeRide = true
+        }.resume()
+    }
     
+    // call any time pausing or ending session if ride active
+    // and on dropoff pressed
+    func endRide() {
+        // post request for ending the current ride
+        if activeRide == false {
+            return
+        }
+        self.activeRide = false
+        var resp = 0
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let myDriverID : String = appDelegate.driverID
+        let parameters: [String: Any] = [
+            "driver_id": myDriverID,
+            "ride_id": self.ride_id
+        ]
+        let url = URL(string: "https://chariot.augustabt.com/api/endRide")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
+                return
+            }
+        let jsonString = String(data: httpBody, encoding: .utf8)
+        print(jsonString!)
+        request.httpBody = httpBody
+        request.timeoutInterval = 20
+                
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if error == nil, let response = response as? HTTPURLResponse {
+                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                print("statusCode: \(response.statusCode)")
+                resp = response.statusCode
+                print(resp)
+            }
+        }.resume()
+    }
     
+    func doubleToCLPlacemark(lat: Double, long: Double) -> CLPlacemark {
+//        CLLocationDe
+        let coords = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        let mkPlace = MKPlacemark(coordinate: coords)
+        let place = CLPlacemark(placemark: mkPlace)
+        
+        return place
+    }
+    
+    func sendStatus(eta: Double) {
+        var resp = 0
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let myDriverID : String = appDelegate.driverID
+        let curCoords = self.currentLocation?.coordinate
+        
+        let parameters: [String: Any] = [
+            "driver_id": myDriverID,
+            "current_ride_id": self.ride_id,
+            "eta": eta,
+            "lat": curCoords?.latitude,
+            "long": curCoords?.longitude
+        ]
+        let url = URL(string: "https://chariot.augustabt.com/api/endRide")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
+                return
+            }
+        let jsonString = String(data: httpBody, encoding: .utf8)
+        print(jsonString!)
+        request.httpBody = httpBody
+        request.timeoutInterval = 20
+                
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if error == nil, let response = response as? HTTPURLResponse {
+                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                print("statusCode: \(response.statusCode)")
+                resp = response.statusCode
+                print(resp)
+            }
+        }.resume()
+    }
     
     // MARK: - Navigation
 
@@ -324,8 +492,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // Pass the selected object to the new view controller.
         if let vc = segue.destination as? RiderDetailsViewController {
 //            pass rider name and eventually image here
-            vc.riderName = "Passed Rider Name"
-            print("should be passing the name here")
+            vc.riderName = self.rider_name
         }
     }
     
