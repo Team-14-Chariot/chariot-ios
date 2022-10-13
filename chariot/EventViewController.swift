@@ -31,7 +31,7 @@ class EventViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
-    
+    /*
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
 
         if identifier == "startToMain" {
@@ -81,6 +81,6 @@ class EventViewController: UIViewController {
         }
 
         return false
-    }
+    }*/
 //
 }
