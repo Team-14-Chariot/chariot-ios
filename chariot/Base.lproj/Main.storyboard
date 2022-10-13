@@ -81,7 +81,7 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="gray" titleAlignment="center">
                                     <attributedString key="attributedTitle">
-                                        <fragment content="Accept Ride">
+                                        <fragment content="Pickup Rider[s]">
                                             <attributes>
                                                 <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                 <font key="NSFont" size="19" name="Helvetica"/>

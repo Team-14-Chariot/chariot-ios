@@ -123,7 +123,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
 //            mapView.removeOverlays(self.mapView.overlays)
             
             if activeRide {
-                sendStatus(eta: self.generatePolyLine(toDestination: self.curDestination!))
+                if self.currentStatus == status.TO_PICKUP {
+                    sendStatus(eta: self.generatePolyLine(toDestination: self.curDestination!))
+                } else {
+                    _ = self.generatePolyLine(toDestination: self.curDestination!)
+                }
             }
         }
 
@@ -338,7 +342,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // post request to getRide
         //send driver_id, current lat, and long
         // set self.ride_id
-        let curCoords = self.currentLocation?.coordinate
+        let curCoords = self.currentLocation!.coordinate
         
         var resp = 0
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -346,8 +350,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         let parameters: [String: Any] = [
             "driver_id": myDriverID,
             //TODO: check that this works
-            "lat": curCoords?.latitude,
-            "long": curCoords?.longitude
+            "lat": String(curCoords.latitude),
+            "long": String(curCoords.longitude)
         ]
         let url = URL(string: "https://chariot.augustabt.com/api/getRide")!
         var request = URLRequest(url: url)
@@ -380,8 +384,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     self.ride_id = json["ride_id"] as? String ?? "no_id"
                     self.rider_name = json["rider_name"] as? String ?? "no_name"
                     
-                    self.riderLocation = self.doubleToCLPlacemark(lat: (json["source_lat"] as? Double ?? 0.0), long: (json["source_long"] as? Double ?? 0.0))
-                    self.riderDestination = self.doubleToCLPlacemark(lat: (json["dest_lat"] as? Double ?? 0.0), long: (json["dest_long"] as? Double ?? 0.0))
+                    self.riderLocation = self.stringToCLPlacemark(lat: (json["source_lat"] as? String ?? ""), long: (json["source_long"] as? String ?? ""))
+                    self.riderDestination = self.stringToCLPlacemark(lat: (json["dest_lat"] as? String ?? ""), long: (json["dest_long"] as? String ?? ""))
                     
                     self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderDestination!))
                     _ = self.generatePolyLine(toDestination:  self.curDestination!)
@@ -439,9 +443,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }.resume()
     }
     
-    func doubleToCLPlacemark(lat: Double, long: Double) -> CLPlacemark {
-//        CLLocationDe
-        let coords = CLLocationCoordinate2D(latitude: lat, longitude: long)
+    func stringToCLPlacemark(lat: String, long: String) -> CLPlacemark {
+        let coords = CLLocationCoordinate2D(latitude: (lat as NSString).doubleValue, longitude: (long as NSString).doubleValue)
         let mkPlace = MKPlacemark(coordinate: coords)
         let place = CLPlacemark(placemark: mkPlace)
         
@@ -452,14 +455,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         var resp = 0
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let myDriverID : String = appDelegate.driverID
-        let curCoords = self.currentLocation?.coordinate
+        let curCoords = self.currentLocation!.coordinate
         
         let parameters: [String: Any] = [
             "driver_id": myDriverID,
             "current_ride_id": self.ride_id,
             "eta": eta,
-            "lat": curCoords?.latitude,
-            "long": curCoords?.longitude
+            "lat": String(curCoords.latitude),
+            "long": String(curCoords.longitude)
         ]
         let url = URL(string: "https://chariot.augustabt.com/api/endRide")!
         var request = URLRequest(url: url)
