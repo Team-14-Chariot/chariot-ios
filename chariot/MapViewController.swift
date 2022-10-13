@@ -31,12 +31,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     private var activeRide: Bool = false
     private var curDestination: MKMapItem?
     
-    var driverID: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Driver ID:")
-        print(driverID)
 
         mapView.delegate = self
 
@@ -73,6 +70,34 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     override func viewDidAppear(_ animated: Bool) {
         print("accepting Rides")
 //        turn on accepting rides here
+        // post request for pausing an event
+        var resp = 0
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let myDriverID : String = appDelegate.driverID
+        let parameters: [String: Any] = [
+            "driver_id": myDriverID
+        ]
+        let url = URL(string: "https://chariot.augustabt.com/api/resumeDriver")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
+                return
+            }
+        let jsonString = String(data: httpBody, encoding: .utf8)
+        print(jsonString!)
+        request.httpBody = httpBody
+        request.timeoutInterval = 20
+                
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if error == nil, let data = data, let response = response as? HTTPURLResponse {
+                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                print("statusCode: \(response.statusCode)")
+                resp = response.statusCode
+                print(resp)
+            }
+        }.resume()
     }
 
     // MARK - CLLocationManagerDelegate
@@ -217,7 +242,37 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
 //        drop off current rider if they exist
 //        set status to inactive in back end
         self.performSegue(withIdentifier: "returnToEntry", sender: nil)
+        
+        // post request for leaving an event
+        var resp = 0
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let myDriverID : String = appDelegate.driverID
+        let parameters: [String: Any] = [
+            "driver_id": myDriverID
+        ]
+        let url = URL(string: "https://chariot.augustabt.com/api/leaveEvent")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
+                return
+            }
+        let jsonString = String(data: httpBody, encoding: .utf8)
+        print(jsonString!)
+        request.httpBody = httpBody
+        request.timeoutInterval = 20
+                
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if error == nil, let data = data, let response = response as? HTTPURLResponse {
+                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                print("statusCode: \(response.statusCode)")
+                resp = response.statusCode
+                print(resp)
+            }
+        }.resume()
     }
+    
     @IBAction func pauseRidePressed(_ sender: Any) {
 //        dropoff current rider
         self.activeRide = false
@@ -225,6 +280,36 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         testButton.setTitle("Accept Ride", for: .normal)
         self.mapView.removeOverlays(self.mapView.overlays)
 //        set status to offline in backend
+        
+        // post request for pausing an event
+        var resp = 0
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let myDriverID : String = appDelegate.driverID
+        let parameters: [String: Any] = [
+            "driver_id": myDriverID
+        ]
+        let url = URL(string: "https://chariot.augustabt.com/api/pauseDriver")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
+                return
+            }
+        let jsonString = String(data: httpBody, encoding: .utf8)
+        print(jsonString!)
+        request.httpBody = httpBody
+        request.timeoutInterval = 20
+                
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if error == nil, let data = data, let response = response as? HTTPURLResponse {
+                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                print("statusCode: \(response.statusCode)")
+                resp = response.statusCode
+                print(resp)
+            }
+        }.resume()
+        
         self.performSegue(withIdentifier: "pauseRides", sender: nil)
     }
     

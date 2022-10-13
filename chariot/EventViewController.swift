@@ -56,7 +56,6 @@ class EventViewController: UIViewController {
 
             
             // the working stuff
-            
             let url = URL(string: "https://chariot.augustabt.com/api/joinEvent")!
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
@@ -78,7 +77,18 @@ class EventViewController: UIViewController {
                     print("statusCode: \(response.statusCode)")
                     resp = response.statusCode
                     print(resp)
-                    self.driverID = String(data: data, encoding: .utf8)!
+//                    print(data)
+                    do {
+                            let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
+                        self.driverID = (json["driver_id"] as? String)!
+                        print(json["driver_id"])
+                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                        appDelegate.driverID = (json["driver_id"] as? String)!
+                        } catch let error as NSError {
+                            print(error)
+                        }
+                    
+//                    self.driverID = data["driver_id"]
                     self.responseCode = resp
                     semaphore.signal()
                 }
@@ -95,28 +105,6 @@ class EventViewController: UIViewController {
 
         return false
     }
-    
-    
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-        print(segue.identifier)
-        if segue.identifier == "startToMain" {
-            print(self.driverID)
-            guard let navigationController = segue.destination as? UINavigationController else {
-                  return
-                }
-
-                guard let mapControl = navigationController.viewControllers.first as? MapViewController else {
-                  return
-                }
-            mapControl.driverID = self.driverID
-        }
-    }
-    
     
     
 //
