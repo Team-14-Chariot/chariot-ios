@@ -16,6 +16,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     @IBOutlet weak var nextTurnLabel: UILabel!
     @IBOutlet weak var testButton: UIButton!
+    @IBOutlet weak var riderInfoButton: UIButton!
     
     @IBOutlet weak var endSessionButton: UIBarButtonItem!
     @IBOutlet weak var pauseSessionButton: UIBarButtonItem!
@@ -44,8 +45,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         nextTurnLabel.layer.cornerRadius = 8
         nextTurnLabel.clipsToBounds = true
         nextTurnLabel.isHidden = true
+        
         testButton.layer.cornerRadius = testButton.frame.width / 2
         testButton.clipsToBounds = true
+        riderInfoButton.layer.cornerRadius = riderInfoButton.frame.width/2
+        riderInfoButton.clipsToBounds = true
+        riderInfoButton.isHidden = true
+        
 
         // To provide the shadow
         nextTurnLabel.layer.shadowRadius = 10
@@ -166,6 +172,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 print("removed an overlay")
             }
             nextTurnLabel.isHidden = true
+            riderInfoButton.isHidden = true
 
         } else {
             self.activeRide = true
@@ -179,6 +186,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 print(eta)
             }
             nextTurnLabel.isHidden = false
+            riderInfoButton.isHidden = false
+
         }
         
     }

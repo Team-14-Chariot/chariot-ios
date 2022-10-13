@@ -158,6 +158,7 @@
                         <outlet property="mapView" destination="ESh-SX-5a8" id="Alv-Gw-YHL"/>
                         <outlet property="nextTurnLabel" destination="V69-JI-w8T" id="WpV-ef-vlF"/>
                         <outlet property="pauseSessionButton" destination="Xl5-Bq-gkH" id="SUF-xE-mVs"/>
+                        <outlet property="riderInfoButton" destination="zsp-PA-WD6" id="IS4-wY-q50"/>
                         <outlet property="testButton" destination="9b4-cO-dQR" id="NIe-W3-5GK"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="returnToEntry" id="8zN-RF-YMn"/>
                         <segue destination="YH1-xX-4pL" kind="show" identifier="pauseRides" id="MuP-YY-1vl"/>
