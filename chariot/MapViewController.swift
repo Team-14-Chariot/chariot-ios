@@ -31,9 +31,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     private var activeRide: Bool = false
     private var curDestination: MKMapItem?
     
+    var driverID: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("Driver ID:")
+        print(driverID)
 
         mapView.delegate = self
 

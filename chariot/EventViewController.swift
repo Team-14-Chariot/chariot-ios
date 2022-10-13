@@ -12,6 +12,8 @@ class EventViewController: UIViewController {
     @IBOutlet weak var submit: UIButton!
     @IBOutlet weak var event_code: UITextField!
 
+    var driverID = ""
+    var responseCode = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,20 +23,11 @@ class EventViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-   
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    /*
+    
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
 
         if identifier == "startToMain" {
+            var resp = 0
             // here is where I would query the backend for valid event
             // want to be able to pass event name to next screen ?
 
@@ -43,44 +36,88 @@ class EventViewController: UIViewController {
             //name:
             //carDescription:
             //car_liscence_plate:
-            let parameters: [String: Any] = [
-                "eventId": event_code.text,
-                "name": "Test Driver",
-                "carDescription": "short description",
-                "car_liscence_plate": "YCQ118"
-                    ]
+//            struct eventParams: Codable {
+//                var event_id: String
+//                var name: String?
+//                var car_capacity: Int?
+//                var car_description: String?
+//                var car_liscence_plate: String?
+//            }
             
-            let url = URL(string: "chariot.augustabt.com:8090/api/joinEvent")!
+            let parameters: [String: Any] = [
+                "event_id": String(event_code.text!),
+                "name": "Test Driver",
+                "car_capacity": 3,
+                "car_description": "short description",
+                "car_liscence_plate": "YCQ118"
+            ]
+//            let params = eventParams(event_id: String(event_code.text!), name: "Test", car_capacity: 3, car_description: "nope", car_liscence_plate: "YCQ118")
+//
+
+            
+            // the working stuff
+            
+            let url = URL(string: "https://chariot.augustabt.com/api/joinEvent")!
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
-            request.setValue("Application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
                     return false
                 }
-                request.httpBody = httpBody
-                request.timeoutInterval = 20
-                let session = URLSession.shared
-                session.dataTask(with: request) { (data, response, error) in
-                    if let response = response {
-                        print(response)
-                    }
-                    if let data = data {
-                        do {
-                            let json = try JSONSerialization.jsonObject(with: data, options: [])
-                            print(json)
-                        } catch {
-                            print(error)
-                        }
-                    }
-                }.resume()
+            let jsonString = String(data: httpBody, encoding: .utf8)
+            print(jsonString!)
+            request.httpBody = httpBody
+            request.timeoutInterval = 20
             
-//            if event_code.text == "pdt" {
-//                return true
-//            }
-            return true;
+            let semaphore = DispatchSemaphore(value: 0)
+            
+            let session = URLSession.shared
+            session.dataTask(with: request) { (data, response, error) in
+                if error == nil, let data = data, let response = response as? HTTPURLResponse {
+                    print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                    print("statusCode: \(response.statusCode)")
+                    resp = response.statusCode
+                    print(resp)
+                    self.driverID = String(data: data, encoding: .utf8)!
+                    self.responseCode = resp
+                    semaphore.signal()
+                }
+            }.resume()
+            _ = semaphore.wait(timeout: .distantFuture)
+            
+            print("self.responseCode")
+            print(self.responseCode)
+            print("resp")
+            print(resp)
+            
+            return self.responseCode == 200
         }
 
         return false
-    }*/
+    }
+    
+    
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destination.
+        // Pass the selected object to the new view controller.
+        print(segue.identifier)
+        if segue.identifier == "startToMain" {
+            print(self.driverID)
+            guard let navigationController = segue.destination as? UINavigationController else {
+                  return
+                }
+
+                guard let mapControl = navigationController.viewControllers.first as? MapViewController else {
+                  return
+                }
+            mapControl.driverID = self.driverID
+        }
+    }
+    
+    
+    
 //
 }
