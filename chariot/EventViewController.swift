@@ -20,6 +20,10 @@ class EventViewController: UIViewController {
         
         self.navigationItem.setHidesBackButton(true, animated: true);
         
+//        event_code.borderStyle = UITextField.BorderStyle.roundedRect
+        self.event_code.layer.cornerRadius = (self.event_code.frame.height / 2)
+        self.event_code.clipsToBounds = true
+
         // Do any additional setup after loading the view.
     }
     

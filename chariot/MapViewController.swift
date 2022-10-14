@@ -75,8 +75,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         if CLLocationManager.locationServicesEnabled() {
             locationManager.requestAlwaysAuthorization()
             locationManager.startUpdatingLocation()
-            //            locationManager.startUpdatingHeading()
+            locationManager.startUpdatingHeading()
         }
+        mapView.setUserTrackingMode(.followWithHeading, animated: false)
     }
     override func viewDidAppear(_ animated: Bool) {
         print("accepting Rides")
@@ -123,6 +124,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         defer { currentLocation = locations.last
             let viewRegion = MKCoordinateRegion(center: locations.last!.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
             mapView.setRegion(viewRegion, animated: true)
+            
+//            mapView.userTrackingMode = .followWithHeading
+            
             //            print("would be this often")
             // probably have to add this part to dropoff button
             // updates too slow to keep up with highway driving
@@ -150,11 +154,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        mapView.camera.heading = newHeading.magneticHeading
-        mapView.setCamera(mapView.camera, animated: true)
-    }
-    
+//    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+//        mapView.camera.heading = newHeading.magneticHeading
+//        mapView.setCamera(mapView.camera, animated: true)
+//
+//    }
+//    func centerViewOnUserLocation() { mapView.setUserTrackingMode(.followWithHeading, animated:true)}
     
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let polyline = overlay as? MKPolyline {
