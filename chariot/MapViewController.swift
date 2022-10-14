@@ -38,6 +38,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var ride_id: String = ""
     var rider_name: String = ""
     private var curDestination: MKMapItem?
+    var waiting_for_ride: Bool = true
     
     
     override func viewDidLoad() {
@@ -111,6 +112,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         // get Ride
         if activeRide == false {
+            self.waiting_for_ride = true
             getRide()
         }
     }
@@ -228,7 +230,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             testButton.isHidden = true
 //            make a new get ride request
             self.currentStatus = status.EMPTY
-            
+            self.waiting_for_ride = true
             self.getRide()
             
         } // this is on the way to rider, would press button now once you get to the rider
@@ -268,7 +270,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
 //        self.endRide()
         
         print("----- END SESSION CALLED ------")
-        
+//        getRide().stop()
+        self.waiting_for_ride = false
         self.activeRide = false
         nextTurnLabel.isHidden = true
         self.mapView.removeOverlays(self.mapView.overlays)
@@ -313,6 +316,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         nextTurnLabel.isHidden = true
         testButton.setTitle("Accept Ride", for: .normal)
         self.mapView.removeOverlays(self.mapView.overlays)
+        self.waiting_for_ride = false
         
         print("----- PAUSE RIDES CALLED ------")
         
@@ -384,36 +388,47 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 resp = response.statusCode
                 print(resp)
                 print(String(data: data, encoding: .utf8))
-
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
-                    print(json)
-                    // set riderLocation
-                    // set Destination
-                    // set rider name
-                    self.ride_id = json["ride_id"] as? String ?? "no_id"
-                    self.rider_name = json["rider_name"] as? String ?? "no_name"
+                if resp != 200 && self.waiting_for_ride == true {
+                    Task {
+                        // Delay the task by 1 second:
+                        try await Task.sleep(nanoseconds: 5_000_000_000)
+                        
+                        // Perform our operation
+                        self.getRide()
+                        return
+                    }
                     
-                    self.riderLocation = self.stringToCLPlacemark(lat: (json["source_latitude"] as? String ?? ""), long: (json["source_longitude"] as? String ?? ""))
-                    self.riderDestination = self.stringToCLPlacemark(lat: (json["dest_latitude"] as? String ?? ""), long: (json["dest_longitude"] as? String ?? ""))
-                    
-                    self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderLocation!))
-                    _ = self.generatePolyLine(toDestination:  self.curDestination!)
-                    
-                    
-                    
-                } catch let error as NSError {
-                    print(error)
+                } else if resp == 200 {
+                    do {
+                        let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
+                        print(json)
+                        // set riderLocation
+                        // set Destination
+                        // set rider name
+                        self.ride_id = json["ride_id"] as? String ?? "no_id"
+                        self.rider_name = json["rider_name"] as? String ?? "no_name"
+                        
+                        self.riderLocation = self.stringToCLPlacemark(lat: (json["source_latitude"] as? String ?? ""), long: (json["source_longitude"] as? String ?? ""))
+                        self.riderDestination = self.stringToCLPlacemark(lat: (json["dest_latitude"] as? String ?? ""), long: (json["dest_longitude"] as? String ?? ""))
+                        
+                        self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderLocation!))
+                        _ = self.generatePolyLine(toDestination:  self.curDestination!)
+                        
+                    } catch let error as NSError {
+                        print(error)
+                    }
+                    // set stuff to active
+                    self.activeRide = true
+                    self.currentStatus = status.TO_PICKUP
+                    self.nextTurnLabel.isHidden = false
+                    self.riderInfoButton.isHidden = false
+                    self.testButton.setTitle("Pickup Rider[s]", for: .normal)
+                    self.testButton.isHidden = false
+                    self.waiting_for_ride = false
                 }
             }
             
-            // set stuff to active
-            self.activeRide = true
-            self.currentStatus = status.TO_PICKUP
-            self.nextTurnLabel.isHidden = false
-            self.riderInfoButton.isHidden = false
-            self.testButton.setTitle("Pickup Rider[s]", for: .normal)
-            self.testButton.isHidden = false
+           
         }.resume()
         
     }
