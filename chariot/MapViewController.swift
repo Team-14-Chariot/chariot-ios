@@ -136,6 +136,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     _ = self.generatePolyLine(toDestination: self.curDestination!)
                     sendStatus(eta: 0)
                 }
+            } else {
+                sendStatus(eta: 0)
             }
         }
         
