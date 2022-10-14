@@ -116,6 +116,14 @@
                                     <segue destination="f53-fK-pc2" kind="presentation" identifier="toRiderDetails" id="FrU-hc-mhR"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aQX-9A-Mzf">
+                                <rect key="frame" x="93" y="172" width="219" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V69-JI-w8T">
                                 <rect key="frame" x="16" y="102" width="358" height="62"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -148,6 +156,7 @@
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="endSessionButton" destination="8Vw-DO-mwf" id="GuQ-LB-KT6"/>
+                        <outlet property="etaLabel" destination="aQX-9A-Mzf" id="nB5-F5-58T"/>
                         <outlet property="mapView" destination="ESh-SX-5a8" id="Alv-Gw-YHL"/>
                         <outlet property="nextTurnLabel" destination="V69-JI-w8T" id="WpV-ef-vlF"/>
                         <outlet property="pauseSessionButton" destination="Xl5-Bq-gkH" id="SUF-xE-mVs"/>

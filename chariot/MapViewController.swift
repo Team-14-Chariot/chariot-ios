@@ -18,6 +18,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBOutlet weak var testButton: UIButton!
     @IBOutlet weak var riderInfoButton: UIButton!
     
+    @IBOutlet weak var etaLabel: UILabel!
+    
+    
     @IBOutlet weak var endSessionButton: UIBarButtonItem!
     @IBOutlet weak var pauseSessionButton: UIBarButtonItem!
     
@@ -134,10 +137,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             
             if activeRide {
                 if self.currentStatus == status.TO_PICKUP {
-                    sendStatus(eta: self.generatePolyLine(toDestination: self.curDestination!))
+                    let eta = self.generatePolyLine(toDestination: self.curDestination!)
+                    sendStatus(eta: eta)
+                    self.etaLabel.text = String(eta)
                 } else {
                     // on way to dropoff don't send real eta
-                    _ = self.generatePolyLine(toDestination: self.curDestination!)
+                    let eta = self.generatePolyLine(toDestination: self.curDestination!)
+                    self.etaLabel.text = String(eta)
                     sendStatus(eta: 0)
                 }
             } else {
@@ -246,7 +252,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             // need to put address given here instead of default address
             
             self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderDestination!))
-            _ = self.generatePolyLine(toDestination:  self.curDestination!)
+            self.etaLabel.text = String(self.generatePolyLine(toDestination:  self.curDestination!))
             
             nextTurnLabel.isHidden = false
             riderInfoButton.isHidden = false
@@ -419,7 +425,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         self.riderDestination = self.stringToCLPlacemark(lat: (json["dest_latitude"] as? String ?? ""), long: (json["dest_longitude"] as? String ?? ""))
                         
                         self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderLocation!))
-                        _ = self.generatePolyLine(toDestination:  self.curDestination!)
+                        self.etaLabel.text = String(self.generatePolyLine(toDestination:  self.curDestination!))
                         
                     } catch let error as NSError {
                         print(error)
