@@ -29,24 +29,9 @@ class EventViewController: UIViewController {
     
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        
+        /*
         if identifier == "startToMain" {
             var resp = 0
-            // here is where I would query the backend for valid event
-            // want to be able to pass event name to next screen ?
-            
-            // chariot.augustabt.com/api/joinEvent
-            //eventId:
-            //name:
-            //carDescription:
-            //car_liscence_plate:
-            //            struct eventParams: Codable {
-            //                var event_id: String
-            //                var name: String?
-            //                var car_capacity: Int?
-            //                var car_description: String?
-            //                var car_liscence_plate: String?
-            //            }
             
             let parameters: [String: Any] = [
                 "event_id": String(event_code.text!),
@@ -105,9 +90,9 @@ class EventViewController: UIViewController {
             print(resp)
             
             return self.responseCode == 200
-        }
+        }*/
         
-        return false
+        return true // this neeeds to be false after I uncomment it
     }
     
     

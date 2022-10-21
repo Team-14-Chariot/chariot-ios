@@ -20,6 +20,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     @IBOutlet weak var etaLabel: UILabel!
     
+    @IBOutlet weak var distanceToTurnLabel: UILabel!
+    @IBOutlet weak var directionsTurnImage: UIImageView!
+    @IBOutlet weak var distanceToDestLabel: UILabel!
+    @IBOutlet weak var turnByTurnView: UIView!
+    @IBOutlet weak var bottomView: UIView!
     
     @IBOutlet weak var endSessionButton: UIBarButtonItem!
     @IBOutlet weak var pauseSessionButton: UIBarButtonItem!
@@ -66,12 +71,16 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         riderInfoButton.clipsToBounds = true
         riderInfoButton.isHidden = true
         
+        turnByTurnView.layer.cornerRadius = 10
+//        turnByTurnView.isHidden = true
+        
+//        bottomView.isHidden = true
         
         // To provide the shadow
-        nextTurnLabel.layer.shadowRadius = 10
-        nextTurnLabel.layer.shadowOpacity = 1.0
-        nextTurnLabel.layer.shadowOffset = CGSize(width: 5, height: 5)
-        nextTurnLabel.layer.shadowColor = UIColor.black.cgColor
+        turnByTurnView.layer.shadowRadius = 10
+        turnByTurnView.layer.shadowOpacity = 1.0
+        turnByTurnView.layer.shadowOffset = CGSize(width: 5, height: 5)
+        turnByTurnView.layer.shadowColor = UIColor.black.cgColor
         
         
         // Check for Location Services
@@ -125,7 +134,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         defer { currentLocation = locations.last
-            let viewRegion = MKCoordinateRegion(center: locations.last!.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+            let viewRegion = MKCoordinateRegion(center: locations.last!.coordinate, latitudinalMeters: 400, longitudinalMeters: 400)
             mapView.setRegion(viewRegion, animated: true)
             
 //            mapView.userTrackingMode = .followWithHeading
@@ -154,7 +163,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         if currentLocation == nil {
             // Zoom to user location
             if  let userLocation = locations.last {
-                let viewRegion = MKCoordinateRegion(center: userLocation.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+                let viewRegion = MKCoordinateRegion(center: userLocation.coordinate, latitudinalMeters: 400, longitudinalMeters: 400)
                 mapView.setRegion(viewRegion, animated: false)
             }
         }
@@ -210,7 +219,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             print(self.route!.steps[1].instructions)
             print(String(self.route!.steps[1].distance))
             
-            self.nextTurnLabel.text = self.directionLabelString(instructions: self.route!.steps[1].instructions, meters: self.route!.steps[1].distance)
+            self.nextTurnLabel.text = self.route!.steps[1].instructions
+            self.distanceToTurnLabel.text = self.distanceConversion(meters: self.route!.steps[1].distance)
+            if (self.route!.steps[1].instructions.contains("left")) { // left
+                self.directionsTurnImage.image = UIImage(systemName: "arrow.turn.up.left") //arrowshape.turn.up.left
+            } else if (self.route!.steps[1].instructions.contains("right")) { // left
+                self.directionsTurnImage.image = UIImage(systemName: "arrow.turn.up.right") //arrowshape.turn.up.left
+            } else if (self.route!.steps[1].instructions.contains("destination")) {
+                self.directionsTurnImage.image = UIImage(systemName: "mappin.circle") // mappin.circle
+            } else {
+                self.directionsTurnImage.image = UIImage(systemName: "arrow.up")
+            }
         }
         if self.route != nil {
             return self.route!.expectedTravelTime
@@ -218,9 +237,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return -1
     }
     
-    func directionLabelString (instructions: String, meters: Double) -> String {
-        let miles = meters / 1609
-        return String(format: "%@ in %.2f miles", instructions, miles)//("\(instructions)\t \(miles, specifier: "%.2f")")
+    func distanceConversion (meters: Double) -> String {
+        if meters > 153 {
+            let miles = meters / 1609
+            return String(format: "%.2f miles", miles)
+        } else {
+            let feet = round(meters * 3.281 / 50) * 50 // should give value of every 50 feet
+            return String(format: "%.2f feet", feet)
+        }
+            
     }
     
     
@@ -238,7 +263,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 mapView.removeOverlays(self.mapView.overlays)
                 print("removed an overlay")
             }
-            nextTurnLabel.isHidden = true
+            turnByTurnView.isHidden = true
+            bottomView.isHidden = true
+
             riderInfoButton.isHidden = true
             testButton.isHidden = true
             //            make a new get ride request
@@ -254,7 +281,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderDestination!))
             self.etaLabel.text = String(self.generatePolyLine(toDestination:  self.curDestination!))
             
-            nextTurnLabel.isHidden = false
+            turnByTurnView.isHidden = false
+            bottomView.isHidden = false
             riderInfoButton.isHidden = false
             testButton.isHidden = false
             
@@ -286,7 +314,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         //        getRide().stop()
         self.waiting_for_ride = false
         self.activeRide = false
-        nextTurnLabel.isHidden = true
+        turnByTurnView.isHidden = true
+        bottomView.isHidden = true
         self.mapView.removeOverlays(self.mapView.overlays)
         testButton.setTitle("Accept Ride", for: .normal)
         //        drop off current rider if they exist
@@ -433,7 +462,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     // set stuff to active
                     self.activeRide = true
                     self.currentStatus = status.TO_PICKUP
-                    self.nextTurnLabel.isHidden = false
+                    self.turnByTurnView.isHidden = false
+                    self.bottomView.isHidden = false
                     self.riderInfoButton.isHidden = false
                     self.testButton.setTitle("Pickup Rider[s]", for: .normal)
                     self.testButton.isHidden = false
