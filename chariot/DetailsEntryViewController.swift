@@ -9,9 +9,12 @@ import UIKit
 
 class DetailsEntryViewController: UIViewController {
 
+
     @IBOutlet weak var nameField: UITextField!
-    @IBOutlet weak var capacityField: UITextField!
     @IBOutlet weak var plateField: UITextField!
+    
+    @IBOutlet weak var capacityField: UITextField!
+    
     @IBOutlet weak var descriptionField: UITextField!
     
     @IBOutlet weak var submitButton: UIButton!
@@ -23,6 +26,7 @@ class DetailsEntryViewController: UIViewController {
     }
     
     @IBAction func onSubmit(_ sender: Any) {
+        
         let name : String = nameField.text ?? "no_name"
         let capacity : Int = Int(capacityField.text!) ?? 3
         let plate : String = plateField.text ?? ""

@@ -295,7 +295,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             //            make a new get ride request
             self.currentStatus = status.EMPTY
             self.waiting_for_ride = true
-            self.getRide()
+            
+            // TODO: make a popup to ask if you want to get ride if no go to pause screen
+            let alert = UIAlertController(title: "Continue Driving?", message: "Confirm you are ready for your next ride or pause the session.", preferredStyle: .alert)
+            // add an action (button)
+            // need to change handler to a function that also turns off accepting rides in backend
+            alert.addAction(UIAlertAction(title: "Pause Rides", style: UIAlertAction.Style.default, handler:{ _ in self.pauseRidePressed(self)}))
+            alert.addAction(UIAlertAction(title: "Keep Driving", style: UIAlertAction.Style.default, handler: {_ in self.getRide()}))
+            // show the alert
+            self.present(alert, animated: true, completion: nil)
             
         } // this is on the way to rider, would press button now once you get to the rider
         else if self.currentStatus == status.TO_PICKUP {
@@ -380,6 +388,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.activeRide = false
         bottomView.isHidden = true
         turnByTurnView.isHidden = true
+        sidePanelView.isHidden = true
         
 //        nextTurnLabel.isHidden = true
 //        testButton.setTitle("Accept Ride", for: .normal)
@@ -424,7 +433,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // post request to getRide
         //send driver_id, current lat, and long
         // set self.ride_id
-        
+        /*
         print("--- GET RIDE CALLED ----")
         let curCoords = self.currentLocation!.coordinate
         
@@ -497,7 +506,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 }
             }
         }.resume()
-        /*
+        */
         // for testing
         self.ride_id =  "no_id"
         self.rider_name = "no_name"
@@ -516,7 +525,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.testButton.setTitle("Pickup Rider[s]", for: .normal)
         self.testButton.isHidden = false
         self.waiting_for_ride = false
-         */
+         //*/
     }
     
     // call any time pausing or ending session if ride active
