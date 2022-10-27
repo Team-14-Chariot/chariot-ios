@@ -44,7 +44,7 @@
                                     <color key="baseBackgroundColor" systemColor="opaqueSeparatorColor"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <segue destination="4V9-9E-Bze" kind="show" identifier="startToMain" id="H8d-FV-xtY"/>
+                                    <segue destination="91s-Bu-1XT" kind="show" identifier="toDetails" id="o5E-Lh-g8G"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -59,14 +59,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-12.307692307692307" y="-324.17061611374407"/>
+            <point key="canvasLocation" x="-12" y="-1038"/>
         </scene>
         <!--Details Entry View Controller.swift-->
         <scene sceneID="B06-ME-pN3">
             <objects>
                 <viewController id="91s-Bu-1XT" customClass="DetailsEntryViewController.swift" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eBp-PA-spB">
-                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="787"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VHE-X7-Ktb">
@@ -74,9 +74,13 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="Submit" cornerStyle="capsule"/>
+                                <connections>
+                                    <action selector="onSubmit:" destination="91s-Bu-1XT" eventType="touchUpInside" id="UGO-sQ-ebO"/>
+                                    <segue destination="4V9-9E-Bze" kind="show" identifier="toMainDisplay" id="mQU-bD-XDZ"/>
+                                </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="LDk-VY-28j">
-                                <rect key="frame" x="156" y="746" width="78" height="64"/>
+                                <rect key="frame" x="156" y="684" width="78" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9iO-sv-Ggs">
@@ -107,6 +111,7 @@
                         <viewLayoutGuide key="safeArea" id="pKh-Fq-beh"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
+                    <navigationItem key="navigationItem" id="zNJ-0K-4HW"/>
                     <connections>
                         <outlet property="capacityField" destination="VD8-wj-4iw" id="gol-Rt-Ciu"/>
                         <outlet property="descriptionField" destination="thD-Ot-uQM" id="Wmg-3X-ghg"/>
@@ -117,7 +122,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Kg-TJ-W9v" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="793.84615384615381" y="-324.17061611374407"/>
+            <point key="canvasLocation" x="-12" y="-314"/>
         </scene>
         <!--Chariot-->
         <scene sceneID="MIS-fY-i6D">

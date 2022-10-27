@@ -30,7 +30,7 @@ class EventViewController: UIViewController {
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         
-        if identifier == "startToMain" {
+        if identifier == "toDetails" {
             var resp = 0
             
             let parameters: [String: Any] = [
@@ -40,9 +40,6 @@ class EventViewController: UIViewController {
                 "car_description": "short description",
                 "car_liscence_plate": "YCQ118"
             ]
-            //            let params = eventParams(event_id: String(event_code.text!), name: "Test", car_capacity: 3, car_description: "nope", car_liscence_plate: "YCQ118")
-            //
-            
             
             // the working stuff
             let url = URL(string: "https://chariot.augustabt.com/api/joinEvent")!
