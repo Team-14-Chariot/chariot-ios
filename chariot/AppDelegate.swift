@@ -33,6 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:
+        
+        //TODO: pause instead of end and save / set driver status
         print("----- END SESSION CALLED FROM APP DELEGATE ------")
         var resp = 0
         let semaphore = DispatchSemaphore(value: 0)

@@ -18,6 +18,7 @@
 		C756E4C228D91A61005B0525 /* chariotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C756E4C128D91A61005B0525 /* chariotTests.swift */; };
 		C756E4CC28D91A61005B0525 /* chariotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C756E4CB28D91A61005B0525 /* chariotUITests.swift */; };
 		C756E4CE28D91A61005B0525 /* chariotUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C756E4CD28D91A61005B0525 /* chariotUITestsLaunchTests.swift */; };
+		C786FC94290365A90054FD2A /* DetailsEntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C786FC93290365A90054FD2A /* DetailsEntryViewController.swift */; };
 		C7B201E928F787A500630FE3 /* RiderDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7B201E828F787A500630FE3 /* RiderDetailsViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +55,7 @@
 		C756E4C728D91A61005B0525 /* chariotUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = chariotUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C756E4CB28D91A61005B0525 /* chariotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chariotUITests.swift; sourceTree = "<group>"; };
 		C756E4CD28D91A61005B0525 /* chariotUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chariotUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		C786FC93290365A90054FD2A /* DetailsEntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsEntryViewController.swift; sourceTree = "<group>"; };
 		C7B201E828F787A500630FE3 /* RiderDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiderDetailsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,6 +117,7 @@
 				C756E4B528D91A60005B0525 /* LaunchScreen.storyboard */,
 				C756E4B828D91A60005B0525 /* Info.plist */,
 				C70F7E2728E8F76900B77214 /* MapViewController.swift */,
+				C786FC93290365A90054FD2A /* DetailsEntryViewController.swift */,
 			);
 			path = chariot;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				C756E4AD28D91A5E005B0525 /* SceneDelegate.swift in Sources */,
 				C7B201E928F787A500630FE3 /* RiderDetailsViewController.swift in Sources */,
 				C70F7E2828E8F76900B77214 /* MapViewController.swift in Sources */,
+				C786FC94290365A90054FD2A /* DetailsEntryViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

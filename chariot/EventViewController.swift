@@ -29,7 +29,7 @@ class EventViewController: UIViewController {
     
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        /*
+        
         if identifier == "startToMain" {
             var resp = 0
             
@@ -90,9 +90,9 @@ class EventViewController: UIViewController {
             print(resp)
             
             return self.responseCode == 200
-        }*/
+        }
         
-        return true // this neeeds to be false after I uncomment it
+        return false // this neeeds to be false after I uncomment it
     }
     
     
