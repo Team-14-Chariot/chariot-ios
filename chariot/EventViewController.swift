@@ -59,25 +59,15 @@ class EventViewController: UIViewController {
              
              let session = URLSession.shared
              session.dataTask(with: request) { (data, response, error) in
-             if error == nil, let _ = data, let response = response as? HTTPURLResponse {
-             print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
-             print("statusCode: \(response.statusCode)")
-             resp = response.statusCode
-             print(resp)
-//             //                    print(data)
-//             do {
-//             let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
-//             self.driverID = (json["driver_id"] as? String)!
-//             print(json["driver_id"])
-//
-//             } catch let error as NSError {
-//             print(error)
-//             }
-             
-             //                    self.driverID = data["driver_id"]
-             self.responseCode = resp
-             semaphore.signal()
-             }
+                 if error == nil, let _ = data, let response = response as? HTTPURLResponse {
+                     print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                     print("statusCode: \(response.statusCode)")
+                     resp = response.statusCode
+                     print(resp)
+
+                     self.responseCode = resp
+                     semaphore.signal()
+                 }
              }.resume()
              _ = semaphore.wait(timeout: .distantFuture)
              

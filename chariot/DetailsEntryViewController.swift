@@ -23,6 +23,8 @@ class DetailsEntryViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        self.navigationItem.setHidesBackButton(true, animated: true);
     }
     
     @IBAction func onSubmit(_ sender: Any) {
@@ -59,11 +61,20 @@ class DetailsEntryViewController: UIViewController {
         
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
-            if error == nil, let _ = data, let response = response as? HTTPURLResponse {
+            if error == nil, let data = data, let response = response as? HTTPURLResponse {
                 print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
                 print("statusCode: \(response.statusCode)")
                 resp = response.statusCode
                 print(resp)
+                
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
+                    appDelegate.driverID = (json["driver_id"] as? String)!
+                    print(json["driver_id"])
+                    
+                } catch let error as NSError {
+                    print(error)
+                }
             }
         }.resume()
         

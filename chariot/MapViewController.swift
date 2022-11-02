@@ -34,8 +34,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     private var locationManager: CLLocationManager!
     private var currentLocation: CLLocation?
+    
     private var riderLocation: CLPlacemark?
+    private var riderLocationPin: MKPointAnnotation = MKPointAnnotation()
+
+    
     private var riderDestination: CLPlacemark?
+    private var riderDestinationPin: MKPointAnnotation = MKPointAnnotation()
     
     enum status {
         case EMPTY, TO_PICKUP, TO_DEST
@@ -67,7 +72,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         testButton.layer.cornerRadius = testButton.frame.width / 2
         testButton.clipsToBounds = true
-        testButton.isHidden = true
+//        testButton.isHidden = true
         
         riderInfoButton.layer.cornerRadius = riderInfoButton.frame.width/2
         riderInfoButton.clipsToBounds = true
@@ -199,6 +204,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func generatePolyLine(toDestination destination: MKMapItem) -> TimeInterval {
         
+        
         let request = MKDirections.Request()
         //start from the user's current location to find the ride
         request.source = MKMapItem.forCurrentLocation()
@@ -295,7 +301,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             //            make a new get ride request
             self.currentStatus = status.EMPTY
             self.waiting_for_ride = true
-            
+            self.mapView.removeAnnotation(self.riderDestinationPin)
+
             // TODO: make a popup to ask if you want to get ride if no go to pause screen
             let alert = UIAlertController(title: "Continue Driving?", message: "Confirm you are ready for your next ride or pause the session.", preferredStyle: .alert)
             // add an action (button)
@@ -308,6 +315,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         } // this is on the way to rider, would press button now once you get to the rider
         else if self.currentStatus == status.TO_PICKUP {
             testButton.setTitle("Dropoff", for: .normal)
+            self.mapView.removeAnnotation(self.riderLocationPin)
+            self.mapView.addAnnotation(self.riderDestinationPin)
             // need to put address given here instead of default address
             
             self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderDestination!))
@@ -487,7 +496,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         self.rider_name = json["rider_name"] as? String ?? "no_name"
                         
                         self.riderLocation = self.stringToCLPlacemark(lat: (json["source_latitude"] as? String ?? ""), long: (json["source_longitude"] as? String ?? ""))
+                        self.riderLocationPin.coordinate = CLLocationCoordinate2D(latitude: Double(json["source_latitude"] as? String ?? "0.0")!, longitude: Double(json["source_longitude"] as? String ?? "0.0")!)
+                        
                         self.riderDestination = self.stringToCLPlacemark(lat: (json["dest_latitude"] as? String ?? ""), long: (json["dest_longitude"] as? String ?? ""))
+                        self.riderDestinationPin.coordinate = CLLocationCoordinate2D(latitude: Double(json["dest_latitude"] as? String ?? "0.0")!, longitude: Double(json["dest_longitude"] as? String ?? "0.0")!)
                         
                         self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderLocation!))
                         _ = self.generatePolyLine(toDestination:  self.curDestination!)
@@ -496,6 +508,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         print(error)
                     }
                     // set stuff to active
+                    self.mapView.addAnnotation(self.riderLocationPin)
                     self.activeRide = true
                     self.currentStatus = status.TO_PICKUP
                     self.turnByTurnView.isHidden = false
