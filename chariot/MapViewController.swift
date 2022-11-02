@@ -433,7 +433,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // post request to getRide
         //send driver_id, current lat, and long
         // set self.ride_id
-        /*
+        
         print("--- GET RIDE CALLED ----")
         let curCoords = self.currentLocation!.coordinate
         
@@ -506,7 +506,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 }
             }
         }.resume()
-        */
+        /*
         // for testing
         self.ride_id =  "no_id"
         self.rider_name = "no_name"
@@ -525,7 +525,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.testButton.setTitle("Pickup Rider[s]", for: .normal)
         self.testButton.isHidden = false
         self.waiting_for_ride = false
-         //*/
+         */
     }
     
     // call any time pausing or ending session if ride active
@@ -618,13 +618,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     @IBAction func zoomInPressed(_ sender: Any) {
-        self.zoomDiff -= 25
+        self.zoomDiff -= 40
         let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
         mapView.setRegion(viewRegion, animated: true)
     }
     
     @IBAction func zoomOutPressed(_ sender: Any) {
-        self.zoomDiff += 25
+        self.zoomDiff += 40
         let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
         mapView.setRegion(viewRegion, animated: true)
     }

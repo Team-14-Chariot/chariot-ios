@@ -35,15 +35,17 @@ class DetailsEntryViewController: UIViewController {
         var resp = 0
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let myDriverID : String = appDelegate.driverID
+        let eventID: String = appDelegate.eventID
         let parameters: [String: Any] = [
+            "event_id": eventID,
             "driver_id": myDriverID,
             "name": name,
             "car_capacity": capacity,
-            "car_liscence_plate": plate,
+            "car_license_plate": plate,
             "car_description": description
         ]
         //TODO: fix url
-        let url = URL(string: "https://chariot.augustabt.com/api/")!
+        let url = URL(string: "https://chariot.augustabt.com/api/joinEvent")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
