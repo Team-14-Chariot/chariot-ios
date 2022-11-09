@@ -29,10 +29,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBOutlet weak var endSessionButton: UIBarButtonItem!
     @IBOutlet weak var pauseSessionButton: UIBarButtonItem!
     
+    @IBOutlet weak var sidePanelView: UIView!
+    private var zoomDiff: Double = 0.0
+    
     private var locationManager: CLLocationManager!
     private var currentLocation: CLLocation?
+    
     private var riderLocation: CLPlacemark?
+    private var riderLocationPin: MKPointAnnotation = MKPointAnnotation()
+
+    
     private var riderDestination: CLPlacemark?
+    private var riderDestinationPin: MKPointAnnotation = MKPointAnnotation()
     
     enum status {
         case EMPTY, TO_PICKUP, TO_DEST
@@ -61,20 +69,20 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         nextTurnLabel.layer.cornerRadius = 8
         nextTurnLabel.clipsToBounds = true
-        nextTurnLabel.isHidden = true
         
         testButton.layer.cornerRadius = testButton.frame.width / 2
         testButton.clipsToBounds = true
-        testButton.isHidden = true
+//        testButton.isHidden = true
         
         riderInfoButton.layer.cornerRadius = riderInfoButton.frame.width/2
         riderInfoButton.clipsToBounds = true
-        riderInfoButton.isHidden = true
+        
+        sidePanelView.isHidden = true
         
         turnByTurnView.layer.cornerRadius = 10
-//        turnByTurnView.isHidden = true
+        turnByTurnView.isHidden = true
         
-//        bottomView.isHidden = true
+        bottomView.isHidden = true
         
         // To provide the shadow
         turnByTurnView.layer.shadowRadius = 10
@@ -134,7 +142,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         defer { currentLocation = locations.last
-            let viewRegion = MKCoordinateRegion(center: locations.last!.coordinate, latitudinalMeters: 400, longitudinalMeters: 400)
+            let viewRegion = MKCoordinateRegion(center: locations.last!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
             mapView.setRegion(viewRegion, animated: true)
             
 //            mapView.userTrackingMode = .followWithHeading
@@ -148,11 +156,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 if self.currentStatus == status.TO_PICKUP {
                     let eta = self.generatePolyLine(toDestination: self.curDestination!)
                     sendStatus(eta: eta)
-                    self.etaLabel.text = String(eta)
                 } else {
                     // on way to dropoff don't send real eta
                     let eta = self.generatePolyLine(toDestination: self.curDestination!)
-                    self.etaLabel.text = String(eta)
                     sendStatus(eta: 0)
                 }
             } else {
@@ -163,7 +169,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         if currentLocation == nil {
             // Zoom to user location
             if  let userLocation = locations.last {
-                let viewRegion = MKCoordinateRegion(center: userLocation.coordinate, latitudinalMeters: 400, longitudinalMeters: 400)
+                let viewRegion = MKCoordinateRegion(center: userLocation.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
                 mapView.setRegion(viewRegion, animated: false)
             }
         }
@@ -198,6 +204,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func generatePolyLine(toDestination destination: MKMapItem) -> TimeInterval {
         
+        
         let request = MKDirections.Request()
         //start from the user's current location to find the ride
         request.source = MKMapItem.forCurrentLocation()
@@ -219,6 +226,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             print(self.route!.steps[1].instructions)
             print(String(self.route!.steps[1].distance))
             
+            var totalDist = 0.0
+            for step in self.route!.steps {
+                totalDist += step.distance
+            }
+            // set eta label
+            self.etaLabel.text = self.timeConversion(seconds: self.route!.expectedTravelTime)
+            // set total distance
+            self.distanceToDestLabel.text = self.distanceConversion(meters: totalDist)
+            
             self.nextTurnLabel.text = self.route!.steps[1].instructions
             self.distanceToTurnLabel.text = self.distanceConversion(meters: self.route!.steps[1].distance)
             if (self.route!.steps[1].instructions.contains("left")) { // left
@@ -237,13 +253,29 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return -1
     }
     
+    // converts seconds into more readable value
+    func timeConversion (seconds: Double) -> String {
+        if seconds < 60 {
+            return "< 1 min"
+        } else {
+            let mins = seconds / 60
+            if (seconds.remainder(dividingBy: 60) != 0) {
+                return String(format: "%.0f mins", (mins + 1))
+            } else {
+                return String(format: "%.0f mins", mins)
+            }
+        }
+        
+        
+    }
+    
     func distanceConversion (meters: Double) -> String {
         if meters > 153 {
             let miles = meters / 1609
-            return String(format: "%.2f miles", miles)
+            return String(format: "%.1f miles", miles)
         } else {
             let feet = round(meters * 3.281 / 50) * 50 // should give value of every 50 feet
-            return String(format: "%.2f feet", feet)
+            return String(format: "%.0f feet", feet)
         }
             
     }
@@ -265,26 +297,34 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             }
             turnByTurnView.isHidden = true
             bottomView.isHidden = true
-
-            riderInfoButton.isHidden = true
-            testButton.isHidden = true
+            sidePanelView.isHidden = true
             //            make a new get ride request
             self.currentStatus = status.EMPTY
             self.waiting_for_ride = true
-            self.getRide()
+            self.mapView.removeAnnotation(self.riderDestinationPin)
+
+            // TODO: make a popup to ask if you want to get ride if no go to pause screen
+            let alert = UIAlertController(title: "Continue Driving?", message: "Confirm you are ready for your next ride or pause the session.", preferredStyle: .alert)
+            // add an action (button)
+            // need to change handler to a function that also turns off accepting rides in backend
+            alert.addAction(UIAlertAction(title: "Pause Rides", style: UIAlertAction.Style.default, handler:{ _ in self.pauseRidePressed(self)}))
+            alert.addAction(UIAlertAction(title: "Keep Driving", style: UIAlertAction.Style.default, handler: {_ in self.getRide()}))
+            // show the alert
+            self.present(alert, animated: true, completion: nil)
             
         } // this is on the way to rider, would press button now once you get to the rider
         else if self.currentStatus == status.TO_PICKUP {
             testButton.setTitle("Dropoff", for: .normal)
+            self.mapView.removeAnnotation(self.riderLocationPin)
+            self.mapView.addAnnotation(self.riderDestinationPin)
             // need to put address given here instead of default address
             
             self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderDestination!))
-            self.etaLabel.text = String(self.generatePolyLine(toDestination:  self.curDestination!))
+            _ = self.generatePolyLine(toDestination:  self.curDestination!)
             
             turnByTurnView.isHidden = false
             bottomView.isHidden = false
-            riderInfoButton.isHidden = false
-            testButton.isHidden = false
+            sidePanelView.isHidden = false
             
             self.currentStatus = status.TO_DEST
             
@@ -355,8 +395,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     @IBAction func pauseRidePressed(_ sender: Any) {
         //        dropoff current rider will be done in backend
         self.activeRide = false
-        nextTurnLabel.isHidden = true
-        testButton.setTitle("Accept Ride", for: .normal)
+        bottomView.isHidden = true
+        turnByTurnView.isHidden = true
+        sidePanelView.isHidden = true
+        
+//        nextTurnLabel.isHidden = true
+//        testButton.setTitle("Accept Ride", for: .normal)
         self.mapView.removeOverlays(self.mapView.overlays)
         self.waiting_for_ride = false
         
@@ -398,6 +442,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // post request to getRide
         //send driver_id, current lat, and long
         // set self.ride_id
+        
         print("--- GET RIDE CALLED ----")
         let curCoords = self.currentLocation!.coordinate
         
@@ -451,29 +496,49 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         self.rider_name = json["rider_name"] as? String ?? "no_name"
                         
                         self.riderLocation = self.stringToCLPlacemark(lat: (json["source_latitude"] as? String ?? ""), long: (json["source_longitude"] as? String ?? ""))
+                        self.riderLocationPin.coordinate = CLLocationCoordinate2D(latitude: Double(json["source_latitude"] as? String ?? "0.0")!, longitude: Double(json["source_longitude"] as? String ?? "0.0")!)
+                        
                         self.riderDestination = self.stringToCLPlacemark(lat: (json["dest_latitude"] as? String ?? ""), long: (json["dest_longitude"] as? String ?? ""))
+                        self.riderDestinationPin.coordinate = CLLocationCoordinate2D(latitude: Double(json["dest_latitude"] as? String ?? "0.0")!, longitude: Double(json["dest_longitude"] as? String ?? "0.0")!)
                         
                         self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderLocation!))
-                        self.etaLabel.text = String(self.generatePolyLine(toDestination:  self.curDestination!))
+                        _ = self.generatePolyLine(toDestination:  self.curDestination!)
                         
                     } catch let error as NSError {
                         print(error)
                     }
                     // set stuff to active
+                    self.mapView.addAnnotation(self.riderLocationPin)
                     self.activeRide = true
                     self.currentStatus = status.TO_PICKUP
                     self.turnByTurnView.isHidden = false
                     self.bottomView.isHidden = false
-                    self.riderInfoButton.isHidden = false
+                    self.sidePanelView.isHidden = false
                     self.testButton.setTitle("Pickup Rider[s]", for: .normal)
-                    self.testButton.isHidden = false
                     self.waiting_for_ride = false
                 }
             }
-            
-            
         }.resume()
+        /*
+        // for testing
+        self.ride_id =  "no_id"
+        self.rider_name = "no_name"
         
+        self.riderLocation = self.stringToCLPlacemark(lat: "40.4296268", long: "-86.9171915")
+        self.riderDestination = self.stringToCLPlacemark(lat: "40.4237144", long: "-86.9125957")
+        
+        self.curDestination = MKMapItem(placemark: MKPlacemark(placemark: self.riderLocation!))
+        _ = self.generatePolyLine(toDestination:  self.curDestination!)
+        // set stuff to active
+        self.activeRide = true
+        self.currentStatus = status.TO_PICKUP
+        self.turnByTurnView.isHidden = false
+        self.bottomView.isHidden = false
+        self.sidePanelView.isHidden = false
+        self.testButton.setTitle("Pickup Rider[s]", for: .normal)
+        self.testButton.isHidden = false
+        self.waiting_for_ride = false
+         */
     }
     
     // call any time pausing or ending session if ride active
@@ -563,6 +628,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 print(resp)
             }
         }.resume()
+    }
+    
+    @IBAction func zoomInPressed(_ sender: Any) {
+        self.zoomDiff -= 40
+        let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
+        mapView.setRegion(viewRegion, animated: true)
+    }
+    
+    @IBAction func zoomOutPressed(_ sender: Any) {
+        self.zoomDiff += 40
+        let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
+        mapView.setRegion(viewRegion, animated: true)
     }
     
     // MARK: - Navigation

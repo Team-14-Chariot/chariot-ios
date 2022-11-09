@@ -29,70 +29,58 @@ class EventViewController: UIViewController {
     
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        /*
-        if identifier == "startToMain" {
-            var resp = 0
-            
-            let parameters: [String: Any] = [
-                "event_id": String(event_code.text!),
-                "name": "Test Driver",
-                "car_capacity": 3,
-                "car_description": "short description",
-                "car_liscence_plate": "YCQ118"
-            ]
-            //            let params = eventParams(event_id: String(event_code.text!), name: "Test", car_capacity: 3, car_description: "nope", car_liscence_plate: "YCQ118")
-            //
-            
-            
-            // the working stuff
-            let url = URL(string: "https://chariot.augustabt.com/api/joinEvent")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
-                return false
-            }
-            let jsonString = String(data: httpBody, encoding: .utf8)
-            print(jsonString!)
-            request.httpBody = httpBody
-            request.timeoutInterval = 20
-            
-            let semaphore = DispatchSemaphore(value: 0)
-            
-            let session = URLSession.shared
-            session.dataTask(with: request) { (data, response, error) in
-                if error == nil, let data = data, let response = response as? HTTPURLResponse {
-                    print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
-                    print("statusCode: \(response.statusCode)")
-                    resp = response.statusCode
-                    print(resp)
-                    //                    print(data)
-                    do {
-                        let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
-                        self.driverID = (json["driver_id"] as? String)!
-                        print(json["driver_id"])
-                        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                        appDelegate.driverID = (json["driver_id"] as? String)!
-                    } catch let error as NSError {
-                        print(error)
-                    }
-                    
-                    //                    self.driverID = data["driver_id"]
-                    self.responseCode = resp
-                    semaphore.signal()
-                }
-            }.resume()
-            _ = semaphore.wait(timeout: .distantFuture)
-            
-            print("self.responseCode")
-            print(self.responseCode)
-            print("resp")
-            print(resp)
-            
-            return self.responseCode == 200
-        }*/
+//        return true
         
-        return true // this neeeds to be false after I uncomment it
+        if identifier == "toDetails" {
+            
+             var resp = 0
+             
+             let parameters: [String: Any] = [
+             "event_id": String(event_code.text!)
+             ]
+            
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+            appDelegate.eventID = String(event_code.text!)
+             // the working stuff
+             let url = URL(string: "https://chariot.augustabt.com/api/validateEvent")!
+            
+             var request = URLRequest(url: url)
+             request.httpMethod = "POST"
+             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+             guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
+             return false
+             }
+             let jsonString = String(data: httpBody, encoding: .utf8)
+             print(jsonString!)
+             request.httpBody = httpBody
+             request.timeoutInterval = 20
+             
+             let semaphore = DispatchSemaphore(value: 0)
+             
+             let session = URLSession.shared
+             session.dataTask(with: request) { (data, response, error) in
+                 if error == nil, let _ = data, let response = response as? HTTPURLResponse {
+                     print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                     print("statusCode: \(response.statusCode)")
+                     resp = response.statusCode
+                     print(resp)
+
+                     self.responseCode = resp
+                     semaphore.signal()
+                 }
+             }.resume()
+             _ = semaphore.wait(timeout: .distantFuture)
+             
+             print("self.responseCode")
+             print(self.responseCode)
+             print("resp")
+             print(resp)
+             
+             return self.responseCode == 200
+             }
+             
+             return false // this neeeds to be false after I uncomment it
+             
     }
     
     
