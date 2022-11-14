@@ -55,6 +55,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var rider_name: String = ""
     private var curDestination: MKMapItem?
     var waiting_for_ride: Bool = true
+    @IBOutlet weak var userLocationBtn: UIButton!
     
     
     override func viewDidLoad() {
@@ -97,7 +98,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             locationManager.startUpdatingLocation()
             locationManager.startUpdatingHeading()
         }
-        mapView.setUserTrackingMode(.followWithHeading, animated: false)
+//        mapView.setUserTrackingMode(.followWithHeading, animated: true)
+//           toolbarItems = [trackingButton]
+        
+    }
+    @IBAction func userLocationToggle(_ sender: Any) {
+        mapView.setUserTrackingMode(.followWithHeading, animated: true)
     }
     override func viewDidAppear(_ animated: Bool) {
         print("accepting Rides")
@@ -142,8 +148,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         defer { currentLocation = locations.last
-            let viewRegion = MKCoordinateRegion(center: locations.last!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
-            mapView.setRegion(viewRegion, animated: true)
+//            let viewRegion = MKCoordinateRegion(center: locations.last!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
+//            mapView.setRegion(viewRegion, animated: true)
             
 //            mapView.userTrackingMode = .followWithHeading
             
@@ -185,7 +191,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let polyline = overlay as? MKPolyline {
             let renderer = MKPolylineRenderer(polyline: polyline)
-            renderer.lineWidth = 5.0
+            renderer.lineWidth = 8.0
             renderer.alpha = 0.5
             renderer.strokeColor = UIColor.blue
             
