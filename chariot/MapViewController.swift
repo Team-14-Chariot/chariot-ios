@@ -508,14 +508,26 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         print(error)
                     }
                     // set stuff to active
-                    self.mapView.addAnnotation(self.riderLocationPin)
-                    self.activeRide = true
-                    self.currentStatus = status.TO_PICKUP
-                    self.turnByTurnView.isHidden = false
-                    self.bottomView.isHidden = false
-                    self.sidePanelView.isHidden = false
-                    self.testButton.setTitle("Pickup Rider[s]", for: .normal)
-                    self.waiting_for_ride = false
+                    DispatchQueue.main.async {
+                        self.mapView.addAnnotation(self.riderLocationPin)
+                        self.activeRide = true
+                        self.currentStatus = status.TO_PICKUP
+                        while self.turnByTurnView.isHidden == true {
+                            self.turnByTurnView.isHidden = false
+                            self.turnByTurnView.layoutIfNeeded()
+                        }
+                        while self.bottomView.isHidden == true {
+                            self.bottomView.isHidden = false
+                            self.bottomView.layoutIfNeeded()
+                        }
+                        while self.sidePanelView.isHidden == true {
+                            self.sidePanelView.isHidden = false
+                            self.sidePanelView.layoutIfNeeded()
+                        }
+                        self.testButton.setTitle("Pickup Rider[s]", for: .normal)
+                        self.waiting_for_ride = false
+                        self.view.layoutIfNeeded()
+                    }
                 }
             }
         }.resume()
