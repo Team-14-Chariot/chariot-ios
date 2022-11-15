@@ -315,6 +315,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             // need to change handler to a function that also turns off accepting rides in backend
             alert.addAction(UIAlertAction(title: "Pause Rides", style: UIAlertAction.Style.default, handler:{ _ in self.pauseRidePressed(self)}))
             alert.addAction(UIAlertAction(title: "Keep Driving", style: UIAlertAction.Style.default, handler: {_ in self.getRide()}))
+            alert.addAction(UIAlertAction(title: "End Session", style: UIAlertAction.Style.default, handler: {_ in self.endSession()}))
             // show the alert
             self.present(alert, animated: true, completion: nil)
             
