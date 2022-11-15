@@ -217,26 +217,8 @@
                                 <rect key="frame" x="259" y="174" width="130" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zLO-14-fKj">
-                                        <rect key="frame" x="47" y="178" width="75" height="33"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" image="minus.circle.fill" catalog="system"/>
-                                        <connections>
-                                            <action selector="zoomOutPressed:" destination="vVs-1r-TxJ" eventType="touchUpInside" id="bL9-jP-8c2"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zc3-rs-vSy">
-                                        <rect key="frame" x="47" y="134" width="75" height="36"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" image="plus.circle.fill" catalog="system"/>
-                                        <connections>
-                                            <action selector="zoomInPressed:" destination="vVs-1r-TxJ" eventType="touchUpInside" id="pgA-pc-emD"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zsp-PA-WD6">
-                                        <rect key="frame" x="47" y="50" width="73" height="76"/>
+                                        <rect key="frame" x="49" y="8" width="73" height="76"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" red="0.0" green="0.50196078430000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <state key="normal" title="Button"/>
@@ -282,7 +264,11 @@
                             </connections>
                         </barButtonItem>
                         <rightBarButtonItems>
-                            <barButtonItem title="settings" image="gearshape.fill" catalog="system" id="e59-Dn-ZUc"/>
+                            <barButtonItem title="eventInfo" image="info.circle.fill" catalog="system" id="e59-Dn-ZUc">
+                                <connections>
+                                    <segue destination="3qF-Rc-ybS" kind="presentation" id="Z7k-g4-Qs8"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem title="Pause" image="pause.fill" catalog="system" id="Xl5-Bq-gkH">
                                 <connections>
                                     <action selector="pauseRidePressed:" destination="vVs-1r-TxJ" id="Hjw-aA-ye6"/>
@@ -317,6 +303,42 @@
             <point key="canvasLocation" x="861.53846153846155" y="416.58767772511845"/>
         </scene>
         <!--View Controller-->
+        <scene sceneID="Z6s-xH-UTp">
+            <objects>
+                <viewController id="3qF-Rc-ybS" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="sey-pn-j3P">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="787"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="event name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VFB-JD-Gcq">
+                                <rect key="frame" x="130" y="20" width="130" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZkZ-gY-po8">
+                                <rect key="frame" x="165" y="77" width="61" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gGe-oo-xNN">
+                                <rect key="frame" x="16" y="347" width="358" height="299"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <standardMapConfiguration key="preferredConfiguration"/>
+                            </mapView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="cWG-20-E1s"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="r99-2k-YWo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1947.6923076923076" y="-222.51184834123222"/>
+        </scene>
+        <!--View Controller-->
         <scene sceneID="cew-lD-Obi">
             <objects>
                 <viewController id="YH1-xX-4pL" sceneMemberID="viewController">
@@ -341,7 +363,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a7o-Ye-5Uz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1985" y="306"/>
+            <point key="canvasLocation" x="1954" y="417"/>
         </scene>
         <!--Rider Details View Controller-->
         <scene sceneID="4ch-YJ-1LO">
@@ -372,7 +394,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ako-c6-jpa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1817" y="998"/>
+            <point key="canvasLocation" x="1320" y="1143"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="SVj-IP-iL6">
@@ -401,12 +423,10 @@
     <resources>
         <image name="arrow.up" catalog="system" width="118" height="128"/>
         <image name="face.smiling" catalog="system" width="128" height="123"/>
-        <image name="gearshape.fill" catalog="system" width="128" height="123"/>
+        <image name="info.circle.fill" catalog="system" width="128" height="123"/>
         <image name="location.circle" catalog="system" width="128" height="123"/>
         <image name="logo" width="512" height="512"/>
-        <image name="minus.circle.fill" catalog="system" width="128" height="123"/>
         <image name="pause.fill" catalog="system" width="117" height="128"/>
-        <image name="plus.circle.fill" catalog="system" width="128" height="123"/>
         <image name="stop.fill" catalog="system" width="128" height="113"/>
         <namedColor name="AccentColor">
             <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

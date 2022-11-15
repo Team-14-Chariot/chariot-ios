@@ -648,17 +648,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }.resume()
     }
     
-    @IBAction func zoomInPressed(_ sender: Any) {
-        self.zoomDiff -= 40
-        let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
-        mapView.setRegion(viewRegion, animated: true)
-    }
-    
-    @IBAction func zoomOutPressed(_ sender: Any) {
-        self.zoomDiff += 40
-        let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
-        mapView.setRegion(viewRegion, animated: true)
-    }
+//    @IBAction func zoomInPressed(_ sender: Any) {
+//        self.zoomDiff -= 40
+//        let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
+//        mapView.setRegion(viewRegion, animated: true)
+//    }
+//
+//    @IBAction func zoomOutPressed(_ sender: Any) {
+//        self.zoomDiff += 40
+//        let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
+//        mapView.setRegion(viewRegion, animated: true)
+//    }
     
     // MARK: - Navigation
     
