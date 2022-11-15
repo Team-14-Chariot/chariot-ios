@@ -76,6 +76,15 @@ class EventViewController: UIViewController {
              print("resp")
              print(resp)
              
+            if (self.responseCode != 200) {
+                // TODO: make a popup to ask if you want to get ride if no go to pause screen
+                let alert = UIAlertController(title: "Error Joining Event", message: "Check to make sure your Event Code is correct.", preferredStyle: .alert)
+                // add an action (button)
+                alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertAction.Style.cancel))
+                // show the alert
+                self.present(alert, animated: true, completion: nil)
+            }
+            
              return self.responseCode == 200
              }
              
