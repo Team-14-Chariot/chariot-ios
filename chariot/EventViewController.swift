@@ -43,7 +43,7 @@ class EventViewController: UIViewController {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
-        return false
+        return
         }
         let jsonString = String(data: httpBody, encoding: .utf8)
         print(jsonString!)
