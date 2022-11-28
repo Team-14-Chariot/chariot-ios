@@ -82,15 +82,15 @@ class EventViewController: UIViewController {
         if (self.responseCode == 200) {
             let viewController:
             UIViewController = UIStoryboard(
-                name: "detailsID", bundle: nil).instantiateViewController(withIdentifier: "detailsID") as UIViewController
-            self.present(viewController, animated: false)
+                name: "Main", bundle: nil).instantiateViewController(withIdentifier: "detailsID") as UIViewController
+            self.present(viewController, animated: true)
         }
         //FIX WITH WHATEVER VALUE IS PASSWORD EVENT
         if (self.responseCode == 0) {
             let viewController:
             UIViewController = UIStoryboard(
-                name: "passwordID", bundle: nil).instantiateViewController(withIdentifier: "passwordID") as UIViewController
-            self.present(viewController, animated: false)
+                name: "Main", bundle: nil).instantiateViewController(withIdentifier: "passwordID") as UIViewController
+            self.present(viewController, animated: true)
         }
     }
     /*
