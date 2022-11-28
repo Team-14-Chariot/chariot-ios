@@ -12,6 +12,7 @@
 		C715073A29352E7200453D4E /* EventDetialsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C715073929352E7200453D4E /* EventDetialsViewController.swift */; };
 		C715073C293551A800453D4E /* RiderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C715073B293551A800453D4E /* RiderCell.swift */; };
 		C715073E2935530100453D4E /* RiderQueueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C715073D2935530100453D4E /* RiderQueueViewController.swift */; };
+		C715074029355F3300453D4E /* PasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C715073F29355F3300453D4E /* PasswordViewController.swift */; };
 		C756E4AB28D91A5E005B0525 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C756E4AA28D91A5E005B0525 /* AppDelegate.swift */; };
 		C756E4AD28D91A5E005B0525 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C756E4AC28D91A5E005B0525 /* SceneDelegate.swift */; };
 		C756E4AF28D91A5E005B0525 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C756E4AE28D91A5E005B0525 /* ViewController.swift */; };
@@ -48,6 +49,7 @@
 		C715073929352E7200453D4E /* EventDetialsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetialsViewController.swift; sourceTree = "<group>"; };
 		C715073B293551A800453D4E /* RiderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiderCell.swift; sourceTree = "<group>"; };
 		C715073D2935530100453D4E /* RiderQueueViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiderQueueViewController.swift; sourceTree = "<group>"; };
+		C715073F29355F3300453D4E /* PasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewController.swift; sourceTree = "<group>"; };
 		C756E4A728D91A5E005B0525 /* chariot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = chariot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C756E4AA28D91A5E005B0525 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C756E4AC28D91A5E005B0525 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				C7B201E828F787A500630FE3 /* RiderDetailsViewController.swift */,
 				C715073929352E7200453D4E /* EventDetialsViewController.swift */,
 				C756E4B028D91A5E005B0525 /* Main.storyboard */,
+				C715073F29355F3300453D4E /* PasswordViewController.swift */,
 				C715073D2935530100453D4E /* RiderQueueViewController.swift */,
 				C715073B293551A800453D4E /* RiderCell.swift */,
 				C70F7E2928E911D700B77214 /* EventViewController.swift */,
@@ -282,6 +285,7 @@
 				C70F7E2A28E911D700B77214 /* EventViewController.swift in Sources */,
 				C756E4AF28D91A5E005B0525 /* ViewController.swift in Sources */,
 				C756E4AB28D91A5E005B0525 /* AppDelegate.swift in Sources */,
+				C715074029355F3300453D4E /* PasswordViewController.swift in Sources */,
 				C715073C293551A800453D4E /* RiderCell.swift in Sources */,
 				C756E4AD28D91A5E005B0525 /* SceneDelegate.swift in Sources */,
 				C715073E2935530100453D4E /* RiderQueueViewController.swift in Sources */,
