@@ -15,6 +15,7 @@ class EventDetialsViewController: UIViewController {
     @IBOutlet weak var addressLabel: UILabel!
     
     @IBOutlet weak var eventBoundaryMap: MKMapView!
+    var eventLocationPin: MKPointAnnotation = MKPointAnnotation()
     
     
     var lat: CLLocationDegrees = 40.42383268068071
@@ -24,10 +25,12 @@ class EventDetialsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let eventLocation = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        eventLocationPin.coordinate = eventLocation
         let viewRegion = MKCoordinateRegion(center: eventLocation, latitudinalMeters: radius * 1.25, longitudinalMeters: radius * 1.25)
         let region = CLCircularRegion(center: eventLocation, radius: 5000, identifier: "geofence")
         eventBoundaryMap.addOverlay(MKCircle(center: eventLocation, radius: 200))
         eventBoundaryMap.setRegion(viewRegion, animated: false)
+        self.eventBoundaryMap.addAnnotation(eventLocationPin)
         
         // Do any additional setup after loading the view.
     }
