@@ -24,6 +24,7 @@ class EventViewController: UIViewController {
         self.event_code.layer.cornerRadius = (self.event_code.frame.height / 2)
         self.event_code.clipsToBounds = true
 
+        
         // Do any additional setup after loading the view.
     }
     
@@ -54,21 +55,12 @@ class EventViewController: UIViewController {
         
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
-            if error == nil, let data = data, let response = response as? HTTPURLResponse {
+            if error == nil, let _ = data, let response = response as? HTTPURLResponse {
                 print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
                 print("statusCode: \(response.statusCode)")
                 resp = response.statusCode
                 print(resp)
                 
-                do {
-                    let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
-                    hasPassword = json["password"] as! Bool
-                    
-                } catch let error as NSError {
-                    print(error)
-                }
-                
-//                data.
                 self.responseCode = resp
                 semaphore.signal()
             }
@@ -80,7 +72,7 @@ class EventViewController: UIViewController {
         print("resp")
         print(resp)
         
-       if (self.responseCode != 200) {
+       if (self.responseCode > 205) {
            // TODO: make a popup to ask if you want to get ride if no go to pause screen
            let alert = UIAlertController(title: "Error Joining Event", message: "Check to make sure your Event Code is correct.", preferredStyle: .alert)
            // add an action (button)
@@ -88,14 +80,14 @@ class EventViewController: UIViewController {
            // show the alert
            self.present(alert, animated: true, completion: nil)
        }
-        if (self.responseCode == 200 && !hasPassword) {
+        if (self.responseCode == 200) {
             let viewController:
             UIViewController = UIStoryboard(
                 name: "Main", bundle: nil).instantiateViewController(withIdentifier: "detailsID") as UIViewController
             self.present(viewController, animated: true)
         }
         //FIX WITH WHATEVER VALUE IS PASSWORD EVENT
-        if (self.responseCode == 200 && hasPassword) {
+        if (self.responseCode == 205) {
             let viewController:
             UIViewController = UIStoryboard(
                 name: "Main", bundle: nil).instantiateViewController(withIdentifier: "passwordID") as UIViewController

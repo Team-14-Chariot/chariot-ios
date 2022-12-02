@@ -106,7 +106,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapView.setUserTrackingMode(.followWithHeading, animated: true)
     }
     override func viewDidAppear(_ animated: Bool) {
-        print("accepting Rides")
+//        print("accepting Rides")
         //        turn on accepting rides here
         // post request for setting status to active
         var resp = 0
@@ -123,17 +123,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return
         }
         let jsonString = String(data: httpBody, encoding: .utf8)
-        print(jsonString!)
+//        print(jsonString!)
         request.httpBody = httpBody
         request.timeoutInterval = 20
         
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if error == nil, let _ = data, let response = response as? HTTPURLResponse {
-                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
-                print("statusCode: \(response.statusCode)")
+//                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+//                print("statusCode: \(response.statusCode)")
                 resp = response.statusCode
-                print(resp)
+//                print(resp)
             }
         }.resume()
         
@@ -227,9 +227,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             guard let polyLine = self.route?.polyline else { return }
             self.mapView.addOverlay(polyLine, level: .aboveRoads)
             
-            print("show steps? :")
-            print(self.route!.steps[1].instructions)
-            print(String(self.route!.steps[1].distance))
+//            print("show steps? :")
+//            print(self.route!.steps[1].instructions)
+//            print(String(self.route!.steps[1].distance))
             
             var totalDist = 0.0
             for step in self.route!.steps {
@@ -356,7 +356,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // end current ride if one exists will be done in backed
         //        self.endRide()
         
-        print("----- END SESSION CALLED ------")
+//        print("----- END SESSION CALLED ------")
         //        getRide().stop()
         self.waiting_for_ride = false
         self.activeRide = false
@@ -383,17 +383,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return
         }
         let jsonString = String(data: httpBody, encoding: .utf8)
-        print(jsonString!)
+//        print(jsonString!)
         request.httpBody = httpBody
         request.timeoutInterval = 20
         
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if error == nil, let _ = data, let response = response as? HTTPURLResponse {
-                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
-                print("statusCode: \(response.statusCode)")
+//                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+//                print("statusCode: \(response.statusCode)")
                 resp = response.statusCode
-                print(resp)
+//                print(resp)
             }
         }.resume()
     }
@@ -410,7 +410,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.mapView.removeOverlays(self.mapView.overlays)
         self.waiting_for_ride = false
         
-        print("----- PAUSE RIDES CALLED ------")
+//        print("----- PAUSE RIDES CALLED ------")
         
         // post request for pausing an event
         var resp = 0
@@ -427,17 +427,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return
         }
         let jsonString = String(data: httpBody, encoding: .utf8)
-        print(jsonString!)
+//        print(jsonString!)
         request.httpBody = httpBody
         request.timeoutInterval = 20
         
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if error == nil, let _ = data, let response = response as? HTTPURLResponse {
-                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
-                print("statusCode: \(response.statusCode)")
+//                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+//                print("statusCode: \(response.statusCode)")
                 resp = response.statusCode
-                print(resp)
+//                print(resp)
             }
         }.resume()
         
@@ -449,7 +449,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         //send driver_id, current lat, and long
         // set self.ride_id
         
-        print("--- GET RIDE CALLED ----")
+//        print("--- GET RIDE CALLED ----")
         let curCoords = self.currentLocation!.coordinate
         
         var resp = 0
@@ -469,21 +469,21 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return
         }
         let jsonString = String(data: httpBody, encoding: .utf8)
-        print(jsonString!)
+//        print(jsonString!)
         request.httpBody = httpBody
         request.timeoutInterval = 20
         
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if error == nil, let data = data, let response = response as? HTTPURLResponse {
-                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
-                print("statusCode: \(response.statusCode)")
+//                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+//                print("statusCode: \(response.statusCode)")
                 resp = response.statusCode
-                print(resp)
-                print(String(data: data, encoding: .utf8))
+//                print(resp)
+//                print(String(data: data, encoding: .utf8))
                 if resp != 200 && self.waiting_for_ride == true {
                     Task {
-                        // Delay the task by 1 second:
+                        // Delay the task by 5 second:
                         try await Task.sleep(nanoseconds: 5_000_000_000)
                         
                         // Perform our operation
@@ -494,7 +494,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 } else if resp == 200 {
                     do {
                         let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
-                        print(json)
+//                        print(json)
                         // set riderLocation
                         // set Destination
                         // set rider name
@@ -511,7 +511,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         _ = self.generatePolyLine(toDestination:  self.curDestination!)
                         
                     } catch let error as NSError {
-                        print(error)
+//                        print(error)
                     }
                     // set stuff to active
                     DispatchQueue.main.async {
@@ -563,7 +563,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // and on dropoff pressed
     func endRide() {
         
-        print("----- END RIDE CALLED ------")
+//        print("----- END RIDE CALLED ------")
         
         // post request for ending the current ride
         if activeRide == false {
@@ -586,17 +586,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return
         }
         let jsonString = String(data: httpBody, encoding: .utf8)
-        print(jsonString!)
+//        print(jsonString!)
         request.httpBody = httpBody
         request.timeoutInterval = 20
         
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if error == nil, let response = response as? HTTPURLResponse {
-                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
-                print("statusCode: \(response.statusCode)")
+//                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+//                print("statusCode: \(response.statusCode)")
                 resp = response.statusCode
-                print(resp)
+//                print(resp)
             }
         }.resume()
     }
@@ -611,21 +611,22 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func sendStatus(eta: Double, hasRider: Bool, inRide: Bool) {
         
-        print("----- SEND STATUS CALLED -----")
+//        print("----- SEND STATUS CALLED -----")
         
         var resp = 0
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let myDriverID : String = appDelegate.driverID
         let curCoords = self.currentLocation!.coordinate
+        var parameters: [String: Any] = [:]
         
         if !inRide {
-            let parameters: [String: Any] = [
+            parameters = [
                 "driver_id": myDriverID,
                 "latitude": String(curCoords.latitude),
                 "longitude": String(curCoords.longitude)
             ]
         } else {
-            let parameters: [String: Any] = [
+            parameters = [
                 "driver_id": myDriverID,
                 "ride_id": self.ride_id,
                 "eta": eta,
@@ -635,8 +636,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             ]
         }
         
-        
-        
         let url = URL(string: "https://chariot.augustabt.com/api/updateDriverStatus")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -645,32 +644,20 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return
         }
         let jsonString = String(data: httpBody, encoding: .utf8)
-        print(jsonString!)
+//        print(jsonString!)
         request.httpBody = httpBody
         request.timeoutInterval = 20
         
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if error == nil, let response = response as? HTTPURLResponse {
-                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
-                print("statusCode: \(response.statusCode)")
+//                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+//                print("statusCode: \(response.statusCode)")
                 resp = response.statusCode
-                print(resp)
+//                print(resp)
             }
         }.resume()
     }
-    
-//    @IBAction func zoomInPressed(_ sender: Any) {
-//        self.zoomDiff -= 40
-//        let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
-//        mapView.setRegion(viewRegion, animated: true)
-//    }
-//
-//    @IBAction func zoomOutPressed(_ sender: Any) {
-//        self.zoomDiff += 40
-//        let viewRegion = MKCoordinateRegion(center: currentLocation!.coordinate, latitudinalMeters: 400 + zoomDiff, longitudinalMeters: 400 + zoomDiff)
-//        mapView.setRegion(viewRegion, animated: true)
-//    }
     
     // MARK: - Navigation
     
@@ -678,9 +665,55 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
-        if let vc = segue.destination as? RiderDetailsViewController {
+        
+        if segue.identifier == "toRiderDetails", let vc = segue.destination as? RiderDetailsViewController {
             //            pass rider name and eventually image here
             vc.riderName = self.rider_name
+        }
+        if segue.identifier == "toRiderQueue", let vc = segue.destination as? EventDetialsViewController {
+//            var resp = 0
+//            let appDelegate = UIApplication.shared.delegate as! AppDelegate
+//            let myDriverID : String = appDelegate.driverID
+////            let curCoords = self.currentLocation!.coordinate
+//            let parameters = [
+//                    "driver_id": myDriverID,
+//                ]
+//            // fix url
+//            let url = URL(string: "https://chariot.augustabt.com/api/getDriverEventInfo")!
+//            var request = URLRequest(url: url)
+//            request.httpMethod = "POST"
+//            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//            guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: []) else {
+//                return
+//            }
+//            let jsonString = String(data: httpBody, encoding: .utf8)
+//            print(jsonString!)
+//            request.httpBody = httpBody
+//            request.timeoutInterval = 20
+//            
+//            let session = URLSession.shared
+//            session.dataTask(with: request) { (data, response, error) in
+//                if error == nil, let data = data, let response = response as? HTTPURLResponse {
+//                    print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+//                    print("statusCode: \(response.statusCode)")
+//                    resp = response.statusCode
+//                    print(resp)
+//                    
+//                    do {
+//                        let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
+//                        print(json)
+//                        vc.address = json["address"] as! String
+//                        vc.eventNameLabel.text = json["eventName"] as? String
+//                        vc.addressLabel.text = json["address"] as? String
+//                        vc.radius = json["maxRadius"] as! Double
+////                        vc.viewDidLoad()
+//
+//                    } catch let error as NSError {
+//                        print(error)
+//                    }
+//                }
+//            }.resume()
+            
         }
     }
     

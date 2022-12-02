@@ -26,11 +26,11 @@ class PasswordViewController: UIViewController {
         
         let parameters: [String: Any] = [
             "event_id": event_code,
-            "password": password
+            "driver_password": password
         ]
        
 
-        let url = URL(string: "https://chariot.augustabt.com/api/validateEvent")!
+        let url = URL(string: "https://chariot.augustabt.com/api/validateDriverPassword")!
        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -74,14 +74,20 @@ class PasswordViewController: UIViewController {
         }
         
     }
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+        if let vc = segue.destination as? DetailsEntryViewController {
+            //            pass rider name and eventually image here
+            vc.hasPassword = true
+            vc.password = self.passwordField.text ?? ""
+        }
+        
     }
-    */
+    
 
 }

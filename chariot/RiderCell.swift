@@ -9,10 +9,8 @@ import UIKit
 
 class RiderCell: UITableViewCell {
 
-    @IBOutlet weak var riderImage: UIImageView!
     @IBOutlet weak var riderName: UILabel!
-    @IBOutlet weak var pickupAddress: UILabel!
-    @IBOutlet weak var dropoffAddress: UILabel!
+
     
     override func awakeFromNib() {
         super.awakeFromNib()

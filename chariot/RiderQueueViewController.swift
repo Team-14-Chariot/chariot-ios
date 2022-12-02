@@ -22,8 +22,7 @@ class RiderQueueViewController: UIViewController, UITableViewDataSource, UITable
         let parameters: [String: Any] = [
             "driver_id": myDriverID
         ]
-        // FIX URL
-        let url = URL(string: "https://chariot.augustabt.com/api/resumeDriver")!
+        let url = URL(string: "https://chariot.augustabt.com/api/getRideQueue")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -46,12 +45,14 @@ class RiderQueueViewController: UIViewController, UITableViewDataSource, UITable
                 do {
                     let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:Any]
                     self.riders = json["queue"] as! [[String:Any]]
-                    
+                    print(self.riders)
+                    self.tableView.reloadData()
                 } catch let error as NSError {
                     print(error)
                 }
             }
         }.resume()
+    
     }
     
     @objc func refresh(_ sender: AnyObject) {
@@ -59,7 +60,7 @@ class RiderQueueViewController: UIViewController, UITableViewDataSource, UITable
         // Code to refresh table view
          fetchRiderQueue()
          tableView.reloadData()
-         
+
          self.refreshControl.endRefreshing()
     }
     
@@ -90,16 +91,15 @@ class RiderQueueViewController: UIViewController, UITableViewDataSource, UITable
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // make each cell using this format
-        let cell = tableView.dequeueReusableCell(withIdentifier: "RiderCell") as! RiderCell
-        
-        let name = "" //get name from json
-        let pickup = "" //get pickup address
-        let dropoff = "" //get dropoff from json
+//        let cell = tableView.dequeueReusableCell(withIdentifier: RiderCell, for: indexPath) as! RiderCell
+        let cell  = tableView.dequeueReusableCell(withIdentifier: "riderCell", for: indexPath) as! RiderCell
+        let data = riders[indexPath.row]
+        let name = data["name"] ?? "no-name"//get name from json
+        print(indexPath.row)
+        print(name)
 
-        cell.riderName.text = name
-        cell.pickupAddress.text = pickup
-        cell.dropoffAddress.text = dropoff
-        
+        cell.riderName.text = name as! String
+        cell.layoutIfNeeded()
         return cell
         
     }
