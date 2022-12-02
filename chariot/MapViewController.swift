@@ -161,14 +161,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             if activeRide {
                 if self.currentStatus == status.TO_PICKUP {
                     let eta = self.generatePolyLine(toDestination: self.curDestination!)
-                    sendStatus(eta: eta)
+                    sendStatus(eta: eta, hasRider: false, inRide: true)
                 } else {
-                    // on way to dropoff don't send real eta
                     let eta = self.generatePolyLine(toDestination: self.curDestination!)
-                    sendStatus(eta: 0)
+                    sendStatus(eta: eta, hasRider: true, inRide: true)
                 }
             } else {
-                sendStatus(eta: 0)
+                sendStatus(eta: 0, hasRider: false, inRide: false)
             }
         }
         
@@ -610,7 +609,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return place
     }
     
-    func sendStatus(eta: Double) {
+    func sendStatus(eta: Double, hasRider: Bool, inRide: Bool) {
         
         print("----- SEND STATUS CALLED -----")
         
@@ -619,13 +618,25 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         let myDriverID : String = appDelegate.driverID
         let curCoords = self.currentLocation!.coordinate
         
-        let parameters: [String: Any] = [
-            "driver_id": myDriverID,
-            "ride_id": self.ride_id,
-            "eta": eta,
-            "latitude": String(curCoords.latitude),
-            "longitude": String(curCoords.longitude)
-        ]
+        if !inRide {
+            let parameters: [String: Any] = [
+                "driver_id": myDriverID,
+                "latitude": String(curCoords.latitude),
+                "longitude": String(curCoords.longitude)
+            ]
+        } else {
+            let parameters: [String: Any] = [
+                "driver_id": myDriverID,
+                "ride_id": self.ride_id,
+                "eta": eta,
+                "has_rider": hasRider,
+                "latitude": String(curCoords.latitude),
+                "longitude": String(curCoords.longitude)
+            ]
+        }
+        
+        
+        
         let url = URL(string: "https://chariot.augustabt.com/api/updateDriverStatus")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
