@@ -19,6 +19,9 @@ class DetailsEntryViewController: UIViewController {
     
     @IBOutlet weak var submitButton: UIButton!
     
+    var password: String = ""
+    var hasPassword: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -36,16 +39,17 @@ class DetailsEntryViewController: UIViewController {
         
         var resp = 0
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let myDriverID : String = appDelegate.driverID
         let eventID: String = appDelegate.eventID
-        let parameters: [String: Any] = [
+        var parameters: [String: Any] = [
             "event_id": eventID,
-            "driver_id": myDriverID,
             "name": name,
             "car_capacity": capacity,
             "car_license_plate": plate,
             "car_description": description
         ]
+        if hasPassword {
+            parameters["driver_password"] = password
+        }
         //TODO: fix url
         let url = URL(string: "https://chariot.augustabt.com/api/joinEvent")!
         var request = URLRequest(url: url)
