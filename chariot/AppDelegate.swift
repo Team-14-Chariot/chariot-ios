@@ -6,12 +6,17 @@
 //
 
 import UIKit
+import CoreLocation
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var driverID = ""
     var eventID = ""
+    var eventName = ""
+    var eventAddress = ""
+    var eventRadius =  0.0
+    var eventLocation = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
